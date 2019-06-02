@@ -2,6 +2,7 @@ import sys
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test import LiveServerTestCase
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
 IMPLICIT_WAIT = 5
 HOME_PAGE_TITLE = 'Title'
@@ -30,3 +31,24 @@ class NavigationTest(LiveServerTestCase):
     def test_home_page(self):
         self.browser.get(self.live_server_url)
         self.assertIn(HOME_PAGE_TITLE, self.browser.title)
+
+        header_text = self.browser.find_element_by_tag_name('h1').text
+        self.assertIn('To-Do', header_text)
+
+        input_box = self.browser.find_element_by_id('id_new_item')
+        self.assertEqual(
+            input_box.get_attribute('placeholder'),
+            'Enter a to-do item'
+        )
+
+        input_box.send_keys('Buy a peacock feather')
+
+        input_box.send_keys(Keys.ENTER)
+
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_element_by_tag_name('tr')
+        self.assertTrue(
+            any(row.text == '1: Buy a peacock feather' for row in rows)
+        )
+
+        self.fail('finish the test')
