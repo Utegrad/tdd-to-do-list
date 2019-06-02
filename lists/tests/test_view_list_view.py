@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from lists.models import Item
+from lists.models import Item, List
 
 
 class ListViewTest(TestCase):
@@ -10,8 +10,9 @@ class ListViewTest(TestCase):
         self.assertTemplateUsed(response, 'lists/list.html')
 
     def test_displays_all_items(self):
-        Item.objects.create(text='item 1')
-        Item.objects.create(text='item 2')
+        _list = List.objects.create()
+        Item.objects.create(text='item 1', list=_list)
+        Item.objects.create(text='item 2', list=_list)
 
         response = self.client.get('/lists/the-only-list/')
 
