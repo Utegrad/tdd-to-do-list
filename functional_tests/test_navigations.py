@@ -8,7 +8,7 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
 
 IMPLICIT_WAIT = 5
-MAX_WAIT = 5
+MAX_WAIT = 8
 HOME_PAGE_TITLE = 'To-Do'
 
 
