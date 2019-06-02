@@ -28,6 +28,11 @@ class NavigationTest(LiveServerTestCase):
         self.browser.refresh()
         self.browser.quit()
 
+    def check_for_row_in_list_table(self, row_text):
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn(row_text, [row.text for row in rows])
+
     # browse the home page
     # home page title is correct
     def test_home_page(self):
@@ -48,8 +53,6 @@ class NavigationTest(LiveServerTestCase):
         input_box.send_keys(Keys.ENTER)
         time.sleep(3)
 
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn('1: Buy a peacock feather', [row.text for row in rows])
+        self.check_for_row_in_list_table('1: Buy a peacock feather')
 
         self.fail('finish the test')
