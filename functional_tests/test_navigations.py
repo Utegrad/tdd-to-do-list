@@ -74,4 +74,44 @@ class NavigationTest(LiveServerTestCase):
         self.wait_for_row_in_list_table('2: Use peacock feather to make a fly')
         self.wait_for_row_in_list_table('1: Buy a peacock feather')
 
-        self.fail('finish the test')
+
+    def test_multiple_users_can_start_lists_at_different_urls(self):
+        # first user starts a list
+        self.browser.get(self.live_server_url)
+        # enter first item for list
+        input_box = self.browser.find_element_by_id('id_new_item')
+        input_box.send_keys('Buy a peacock feather')
+        input_box.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table('1: Buy a peacock feather')
+
+        # first user list has unique URL
+        first_user_list_url = self.browser.current_url
+        self.assertRegex(first_user_list_url, '/lists/.+')
+
+        ## Second user - new browser session
+        self.browser.quit()
+        self.browser = webdriver.Firefox()
+
+        # second user does see first user's list items
+        self.browser.get(self.live_server_url)
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('Buy a peacock feather', page_text)
+        self.assertNotIn('Use peacock feather to make a fly', page_text)
+
+        # second user starts a list
+        input_box = self.browser.find_element_by_id('id_new_item')
+        input_box.send_keys('buy milk')
+        input_box.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table('1: buy milk')
+
+        # second user list gets own URL
+        second_user_list_url = self.browser.current_url
+        self.assertRegex(second_user_list_url, '/lists/.+')
+        self.assertNotEqual(second_user_list_url, first_user_list_url)
+
+        # first user list not shown to second user
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('Buy a peacock feather', page_text)
+        self.assertIn('buy milk', page_text)
+
+        self.fail('WIP')
