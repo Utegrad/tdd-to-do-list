@@ -24,3 +24,9 @@ class ListViewTest(TestCase):
         self.assertContains(response, 'item 2')
         self.assertNotContains(response, 'item a')
         self.assertNotContains(response, 'item b')
+
+    def test_passes_correct_list_to_template(self):
+        other_list = List.objects.create(name='some list')
+        correct_list = List.objects.create(name='correct list')
+        response = self.client.get(f'/lists/{correct_list.id}/')
+        self.assertEqual(response.context['list'], correct_list)
