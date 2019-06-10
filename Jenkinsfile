@@ -22,7 +22,6 @@ pipeline {
                 sh 'pip install -r ${WORKSPACE}/deploy/requirements.txt'
             }
         }
-        }
         stage ('Build') {
             steps {
 
