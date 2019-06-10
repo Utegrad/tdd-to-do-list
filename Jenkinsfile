@@ -22,9 +22,9 @@ pipeline {
                 sh 'pip install -r ${WORKSPACE}/deploy/requirements.txt'
             }
         }
-        stage ('Build') {
+        stage ('Deploy') {
             steps {
-
+                echo 'Deploying application'
             }
         }
         stage ('Test') {
