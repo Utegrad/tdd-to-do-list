@@ -17,9 +17,9 @@ pipeline {
             steps {
                 sh 'python3 --version'
                 echo 'Configure virtualenv'
-                sh 'virtualenv ${WORKSPACE}/Envs/deploy'
-                sh 'source ${WORKSPACE}/Envs/deploy/bin/activate'
-                sh 'pip install -r ${WORKSPACE}/deploy/requirements.txt'
+                VENV_PATH = 'Envs/deploy'
+                sh 'virtualenv ${WORKSPACE}/${VENV_PATH}'
+                sh '${WORKSPACE}/$VENV_PATH}/bin/pip install -r ${WORKSPACE}/deploy/requirements.txt'
             }
         }
         stage ('Deploy') {
