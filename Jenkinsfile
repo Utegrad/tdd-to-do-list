@@ -13,12 +13,19 @@ pipeline {
                 checkout scm
             }
         }
+        stage ('Setup') {
+            steps {
+                sh 'python3 --version'
+                echo 'Configure virtualenv'
+                sh 'virtualenv ${WORKSPACE}/Envs/deploy'
+                sh 'source ${WORKSPACE}/Envs/deploy/bin/activate'
+                sh 'pip install -r ${WORKSPACE}/deploy/requirements.txt'
+            }
+        }
+        }
         stage ('Build') {
             steps {
-                echo 'Configure virtualenv'
-                echo "$FOO"
-                sh 'python --version'
-                sh 'python3 --version'
+
             }
         }
         stage ('Test') {
