@@ -15,7 +15,7 @@ pipeline {
         stage ('Build') {
             steps {
                 echo 'Configure virtualenv'
-                echo $AWS_ACCESS_KEY_ID
+                echo "${AWS_ACCESS_KEY_ID}"
                 sh 'python --version'
                 sh 'python3 --version'
             }
