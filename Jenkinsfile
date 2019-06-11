@@ -28,6 +28,8 @@ pipeline {
         }
         stage ('Deploy') {
             steps {
+                sh 'git tag -a v_${BUILD_NUMBER} -m "Jenking Build #${BUILD_NUMBER}"'
+                sh 'git push origin --tags'
                 echo 'Deploying application'
                 sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/python ${WORKSPACE}/deploy/deploy.py'
             }
