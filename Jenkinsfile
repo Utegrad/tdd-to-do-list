@@ -5,6 +5,11 @@ pipeline {
     environment {
         AWS_ACCESS_KEY_ID     = credentials('jenkins-aws-secret-key-id')
         AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
+        APP_SECRETS_NAME = credentials('beta-secrets-name')
+        SSH_USERNAME = credentials('beta-host-server-ssh-username')
+        SSH_PASSWORD = credentials('beta-host-server-ssh-password')
+        SSH_HOST     = credentials('beta-host-server-ssh-host')
+        REGION_NAME = 'us-east-1'
         DEPLOY_VENV_PATH = 'Envs/deploy'
     }
     stages {
@@ -24,6 +29,7 @@ pipeline {
         stage ('Deploy') {
             steps {
                 echo 'Deploying application'
+                sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/python ${WORKSPACE}/deploy/deploy.py'
             }
         }
         stage ('Test') {

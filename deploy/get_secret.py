@@ -7,9 +7,9 @@ import base64
 from botocore.exceptions import ClientError
 
 
-def get_secret():
-    secret_name = "beta/to-do-list/django"
-    region_name = "us-east-1"
+def get_secret(secret_name, region_name):
+    secret = None
+    decoded_binary_secret = None
 
     # Create a Secrets Manager client
     session = boto3.session.Session()
@@ -47,6 +47,9 @@ def get_secret():
             # We can't find the resource that you asked for.
             # Deal with the exception here, and/or rethrow at your discretion.
             raise e
+        elif e.response['Error']['Code'] == 'IncompleteSignatureException':
+            print(e.response['Error']['Message'])
+            raise e
     else:
         # Decrypts secret using the associated KMS CMK.
         # Depending on whether the secret is a string or binary, one of these fields will be populated.
@@ -55,4 +58,4 @@ def get_secret():
         else:
             decoded_binary_secret = base64.b64decode(get_secret_value_response['SecretBinary'])
 
-    # Your code goes here.
+    return secret, decoded_binary_secret
