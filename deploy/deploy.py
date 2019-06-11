@@ -15,7 +15,7 @@ def main(argz):
     ssh_password = os.environ.get('SSH_PASSWORD')
     kwargs = {'password': ssh_password}
 
-    with Connection(host=ssh_host, user=ssh_username, connect_kwargs=kwargs) as c:
+    with Connection(host=ssh_host, user=ssh_username, ) as c:
         c.run('uname -r')
 
     secrets = get_secret(app_secrets_name, region_name)
