@@ -28,7 +28,7 @@ pipeline {
         }
         stage ('Deploy') {
             steps {
-                sh 'git tag -a v_${BUILD_NUMBER}b7 v -m "Jenking Build #${BUILD_NUMBER}"'
+                sh 'git tag -a v_${BUILD_NUMBER}b7 -m "Jenking Build #${BUILD_NUMBER}"'
                 sshagent(['b12f5eac-0b8c-4bae-844c-b4275a8cf4b6']) {
                     sh 'git push origin --tags'
                     echo 'Deploying application'
