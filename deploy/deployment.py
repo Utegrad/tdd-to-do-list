@@ -9,8 +9,8 @@ from fabric import Connection
 from deploy.aws.get_secrets import get_secrets
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-EXCLUDED_FILE_PATTERNS = ('^\..*', '.*\.log$', '.*\.db$')
-EXCLUDED_DIRECTORY_PATTERNS = ('^__pycache__$', '^\..*',)
+EXCLUDED_FILE_PATTERNS = (r'\..+$', '.*\.log$', '.*\.db$', )
+EXCLUDED_DIRECTORY_PATTERNS = (r'__pycache__$', '\\\..+$', '/\..+$', )
 
 
 class Deployment:

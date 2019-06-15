@@ -7,6 +7,11 @@ file_names = [
     ('my.db', True),
     ('manage.py', False),
     ('blah', False),
+    (r'/blah/blah', False),
+    (r'/foo/bar.baz', False),
+    (r'c:\blah\.hidden', True),
+    (r'c:\\blah\\.hidden', True),
+    (r'/blah/.hidden', True),
 ]
 
 directory_names = [
@@ -14,7 +19,11 @@ directory_names = [
     ('.blah', True),
     ('something', False),
     ('else.dir', False),
-    ('C:\\sources\\django_tdd_tutorial\\src\\.ipynb_checkpoints', True)
+    ('C:\\sources\\django_tdd_tutorial\\src\\.ipynb_checkpoints', True),
+    (r'C:\blah\.hidden', True),
+    (r'/blah/.hidden', True),
+    ('/foo/bar', False),
+    ('/foo/bar.baz', False),
 ]
 
 
