@@ -12,6 +12,8 @@ file_names = [
     (r'c:\blah\.hidden', True),
     (r'c:\\blah\\.hidden', True),
     (r'/blah/.hidden', True),
+    (r'c:\\blah\\blah.ipynb', True),
+    (r'/blah/blah.ipynb', True),
 ]
 
 directory_names = [
@@ -26,6 +28,8 @@ directory_names = [
     ('/foo/bar.baz', False),
     ('C:\\sources\\django_tdd_tutorial\\src\\django_tdd_tutorial', False),
     ('C:\\sources\\django_tdd_tutorial\\src\\lists', False, ),
+    ('C:\\test\\functional_tests', True),
+    ('/foo/functional_tests', True),
 ]
 
 

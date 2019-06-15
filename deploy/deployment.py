@@ -1,16 +1,16 @@
 import json
 import os
-import sys
 import re
-from copy import copy
-from os.path import join
+import sys
 
 from fabric import Connection
+from invoke import UnexpectedExit
+
 from deploy.aws.get_secrets import get_secrets
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-EXCLUDED_FILE_PATTERNS = (r'^\..+$', r'[/|\\]\..+$', '.*\.log$', '.*\.db$', )
-EXCLUDED_DIRECTORY_PATTERNS = (r'__pycache__$', '\\\..+$', '/\..+$', r'^\..+$', )
+EXCLUDED_FILE_PATTERNS = (r'^\..+$', r'[/|\\]\..+$', r'.*\.log$', r'.*\.db$', r'\.ipynb$', )
+EXCLUDED_DIRECTORY_PATTERNS = (r'__pycache__$', r'functional_tests$', r'\\\..+$', r'/\..+$', r'^\..+$', )
 
 
 class Deployment:
@@ -32,7 +32,9 @@ class Deployment:
                     continue
                 else:
                     destination_path = os.path.join(new_container, os.path.relpath(item, original_container))
-                    connection.put(item, destination_path.replace('\\', '/'), )
+                    destination_path = destination_path.replace('\\', '/')
+                    print(f'copying file to {destination_path}')
+                    connection.put(item, destination_path, )
                     continue
             if os.path.isdir(item):
                 if self.excluded(name=item, patterns=EXCLUDED_DIRECTORY_PATTERNS):
@@ -40,6 +42,7 @@ class Deployment:
                 else:
                     destination_path = os.path.join(new_container, os.path.relpath(item, original_container))
                     destination_path = destination_path.replace('\\', '/', )
+                    print(f'creating directory {destination_path}')
                     connection.run(f'mkdir -p {destination_path}')
                     self.copy_contents_recursive(item, original_container, new_container, connection)
 
@@ -47,10 +50,16 @@ class Deployment:
         application_path = self.app_path if destination is None else destination
         with Connection(host=self.ssh_host, user=self.ssh_username, ) as conn:
             try:
+                print(f'creating directory {application_path}')
                 conn.run(f'mkdir -p {application_path}')
-                # clean out the root of the application path
+                print(f'removing all files below {application_path}')
                 conn.run(f'find {application_path} -mindepth 1 -type f -exec rm {{}} \\;')
-                conn.run(f'find {application_path} -mindepth 1 -type d -exec rm -rf {{}} \\;')
+                print(f'removing all directories below {application_path}')
+                try:
+                    conn.run(f'find {application_path} -mindepth 1 -type d -exec rm -rf {{}} \\;')
+                except UnexpectedExit as e:
+                    print('ignoring UnexpectedExit exception when removing directories')
+                    print(f'{e.result}')
                 self.copy_contents_recursive(source, source, application_path, conn)
             except Exception as e:
                 raise e
