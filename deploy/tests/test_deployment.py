@@ -24,6 +24,8 @@ directory_names = [
     (r'/blah/.hidden', True),
     ('/foo/bar', False),
     ('/foo/bar.baz', False),
+    ('C:\\sources\\django_tdd_tutorial\\src\\django_tdd_tutorial', False),
+    ('C:\\sources\\django_tdd_tutorial\\src\\lists', False, ),
 ]
 
 

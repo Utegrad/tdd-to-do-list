@@ -9,8 +9,8 @@ from fabric import Connection
 from deploy.aws.get_secrets import get_secrets
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-EXCLUDED_FILE_PATTERNS = (r'\..+$', '.*\.log$', '.*\.db$', )
-EXCLUDED_DIRECTORY_PATTERNS = (r'__pycache__$', '\\\..+$', '/\..+$', )
+EXCLUDED_FILE_PATTERNS = (r'^\..+$', r'[/|\\]\..+$', '.*\.log$', '.*\.db$', )
+EXCLUDED_DIRECTORY_PATTERNS = (r'__pycache__$', '\\\..+$', '/\..+$', r'^\..+$', )
 
 
 class Deployment:
@@ -32,12 +32,14 @@ class Deployment:
                     continue
                 else:
                     destination_path = os.path.join(new_container, os.path.relpath(item, original_container))
-                    connection.put(item, destination_path, )
+                    connection.put(item, destination_path.replace('\\', '/'), )
+                    continue
             if os.path.isdir(item):
                 if self.excluded(name=item, patterns=EXCLUDED_DIRECTORY_PATTERNS):
                     continue
                 else:
                     destination_path = os.path.join(new_container, os.path.relpath(item, original_container))
+                    destination_path = destination_path.replace('\\', '/', )
                     connection.run(f'mkdir -p {destination_path}')
                     self.copy_contents_recursive(item, original_container, new_container, connection)
 
@@ -57,8 +59,7 @@ class Deployment:
     def excluded(name, patterns):
         excluded = False
         for pattern in patterns:
-            p = re.compile(pattern)
-            if p.match(name):
+            if re.search(pattern, name):
                 excluded = True
                 break
         return excluded
