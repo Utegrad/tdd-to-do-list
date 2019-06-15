@@ -7,8 +7,8 @@ import base64
 from botocore.exceptions import ClientError
 
 
-def get_secret(secret_name, region_name):
-    secret = None
+def get_secrets(secret_name, region_name):
+    secrets = None
     decoded_binary_secret = None
 
     # Create a Secrets Manager client
@@ -54,8 +54,8 @@ def get_secret(secret_name, region_name):
         # Decrypts secret using the associated KMS CMK.
         # Depending on whether the secret is a string or binary, one of these fields will be populated.
         if 'SecretString' in get_secret_value_response:
-            secret = get_secret_value_response['SecretString']
+            secrets = get_secret_value_response['SecretString']
         else:
             decoded_binary_secret = base64.b64decode(get_secret_value_response['SecretBinary'])
 
-    return secret, decoded_binary_secret
+    return secrets, decoded_binary_secret
