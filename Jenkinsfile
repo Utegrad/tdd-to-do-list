@@ -30,7 +30,7 @@ pipeline {
             steps {
                 sshagent(['b12f5eac-0b8c-4bae-844c-b4275a8cf4b6']) {
                     echo 'Deploying application'
-                    sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/python ${WORKSPACE}/deploy/deployment.py'
+                    sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/python -m deploy.deployment'
 
                     sh 'git tag -a v_${BUILD_NUMBER}b -m "Jenking Build #${BUILD_NUMBER}"'
                     sh 'git push origin --tags'

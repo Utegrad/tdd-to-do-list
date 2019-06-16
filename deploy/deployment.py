@@ -6,7 +6,7 @@ import sys
 from fabric import Connection
 from invoke import UnexpectedExit
 
-from .aws.get_secrets import get_secrets
+from deploy.aws.get_secrets import get_secrets
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 EXCLUDED_FILE_PATTERNS = (r'^\..+$', r'[/|\\]\..+$', r'.*\.log$', r'.*\.db$', r'\.ipynb$', )
