@@ -24,6 +24,10 @@ class Deployment:
         self.app_path = self.app_secrets['APP_PATH']
         self.django_src = os.path.join(ROOT_DIR, 'src')
 
+    # TODO create a .env file with the data from secrets manager and copy it to {app_path}/django_tdd_tutorial
+    # TODO gather static files into the right directory
+    # TODO restart apache
+
     def copy_contents_recursive(self, container, original_container, new_container, connection):
         contents = [os.path.join(container, p) for p in os.listdir(container)]
         for item in contents:
