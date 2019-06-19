@@ -62,7 +62,8 @@ class Deployment:
         self.django_src = os.path.join(ROOT_DIR, "src")
 
     # TODO create a .env file with the data from secrets manager and copy it to {app_path}/django_tdd_tutorial
-    # next take the result from env_file_values() and create the .env file
+    # TODO incorporate calling write_env_file to local file system
+    # TODO copy local env file to app_path
     # TODO gather static files into the right directory
     # TODO Run migrations
     # TODO restart apache
