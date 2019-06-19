@@ -39,6 +39,16 @@ directory_names = [
     ("/foo/functional_tests", True),
 ]
 
+expected_env_content = [
+    (
+        "DEBUG=false\r"
+        + "SECRET_KEY=some_super_secret_key\r"
+        + "DATABASE_URL=database_string\r"
+        + "INTERNAL_IPS=127.0.0.1\r"
+        + "ALLOWED_HOSTS=localhost,127.0.0.1,foo.bar.com\r"
+    ),
+]
+
 
 @pytest.mark.parametrize("name, excluded", file_names)
 def test_excluded_files(name, excluded):
@@ -70,5 +80,48 @@ def test_env_file_values_for_DotEnvKeys(mock_get_secrets):
     }
     mock_get_secrets.return_value = (get_secrets_string, None)
     deployment = Deployment()
-    actual_env_result = deployment.env_file_values()
+    actual_env_result = deployment.env_file_filter_values()
     assert expected_env_result == actual_env_result
+
+
+@mock.patch("deploy.deployment.get_secrets")
+def test_env_file_content(mock_get_secrets):
+    get_secrets_string = """{"SECRET_KEY":"some_super_secret_key",
+        "DATABASE_URL":"database_string",
+        "APP_PATH":"/foo/bar/app/path",
+        "VENV_PATH":"/foo/bar/Envs/tdd",
+        "STATIC_PATH":"/foo/bar/static/tdd",
+        "MEDIA_PATH":"/foo/bar/media/TDD",
+        "DEBUG":"false",
+        "INTERNAL_IPS":"127.0.0.1",
+        "ALLOWED_HOSTS":"localhost,127.0.0.1,foo.bar.com"}"""
+    expected_env_content = (
+        "DEBUG=false\r"
+        + "SECRET_KEY=some_super_secret_key\r"
+        + "DATABASE_URL=database_string\r"
+        + "INTERNAL_IPS=127.0.0.1\r"
+        + "ALLOWED_HOSTS=localhost,127.0.0.1,foo.bar.com\r"
+    )
+    mock_get_secrets.return_value = (get_secrets_string, None)
+    deployment = Deployment()
+    actual_env_content = deployment.env_file_content()
+    assert expected_env_content == actual_env_content
+
+
+@mock.patch("deploy.deployment.get_secrets")
+def test_write_env_file_content(mock_get_secrets):
+    get_secrets_string = """{"SECRET_KEY":"some_super_secret_key",
+        "DATABASE_URL":"database_string",
+        "APP_PATH":"/foo/bar/app/path",
+        "VENV_PATH":"/foo/bar/Envs/tdd",
+        "STATIC_PATH":"/foo/bar/static/tdd",
+        "MEDIA_PATH":"/foo/bar/media/TDD",
+        "DEBUG":"false",
+        "INTERNAL_IPS":"127.0.0.1",
+        "ALLOWED_HOSTS":"localhost,127.0.0.1,foo.bar.com"}"""
+    mock_get_secrets.return_value = (get_secrets_string, None)
+    deployment = Deployment()
+    m = mock.mock_open()
+    with mock.patch("deploy.deployment.open", m, create=True):
+        deployment.write_env_file("foo")
+    m.assert_called_once_with("foo", "w")

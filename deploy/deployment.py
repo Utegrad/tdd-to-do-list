@@ -67,12 +67,24 @@ class Deployment:
     # TODO Run migrations
     # TODO restart apache
 
-    def env_file_values(self):
+    def env_file_filter_values(self):
         env_keys = DotEnvKeys().keys_
         env_values = {}
         for k in env_keys:
             env_values[k] = self.app_secrets[k]
         return env_values
+
+    def env_file_content(self):
+        filtered_values = self.env_file_filter_values()
+        content = ""
+        for attr, value in filtered_values.items():
+            content = content + f'{attr.lstrip().rstrip()}={value.lstrip().rstrip()}\r'
+        return content
+
+    def write_env_file(self, path):
+        contents = self.env_file_content()
+        with open(path, 'w') as writer:
+            writer.writelines(contents)
 
     def copy_contents_recursive(
         self, container, original_container, new_container, connection
