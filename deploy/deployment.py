@@ -8,7 +8,6 @@ from invoke import UnexpectedExit
 
 from deploy.aws.get_secrets import get_secrets
 
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 EXCLUDED_FILE_PATTERNS = (
     r"^\..+$",
     r"[/|\\]\..+$",
@@ -24,6 +23,7 @@ EXCLUDED_DIRECTORY_PATTERNS = (
     r"^\..+$",
 )
 
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class SecretKeys:
     def __init__(self):
@@ -50,7 +50,7 @@ class DotEnvKeys:
 
 
 class Deployment:
-    def __init__(self):
+    def __init__(self, django_src=None):
         self.secret_keys = SecretKeys()
         self.app_secrets_name = os.environ.get("APP_SECRETS_NAME")
         self.region_name = os.environ.get("REGION_NAME")
@@ -59,7 +59,7 @@ class Deployment:
         self.secrets = get_secrets(self.app_secrets_name, self.region_name)
         self.app_secrets = json.loads(self.secrets[0])
         self.app_path = self.app_secrets[self.secret_keys.APPLICATION_PATH]
-        self.django_src = os.path.join(ROOT_DIR, "src")
+        self.django_src = os.path.join(ROOT_DIR, 'src') if django_src is None else django_src
 
     # TODO create a .env file with the data from secrets manager and copy it to {app_path}/django_tdd_tutorial
     # TODO incorporate calling write_env_file to local file system
@@ -117,7 +117,8 @@ class Deployment:
                         item, original_container, new_container, connection
                     )
 
-    def copy_app_contents(self, source, destination=None):
+    def copy_app_contents(self, source=None, destination=None):
+        django_source = self.django_src if source is None else source
         application_path = self.app_path if destination is None else destination
         with Connection(host=self.ssh_host, user=self.ssh_username) as conn:
             try:
@@ -135,7 +136,7 @@ class Deployment:
                 except UnexpectedExit as e:
                     print("ignoring UnexpectedExit exception when removing directories")
                     print(f"{e.result}")
-                self.copy_contents_recursive(source, source, application_path, conn)
+                self.copy_contents_recursive(django_source, django_source, application_path, conn)
             except Exception as e:
                 raise e
 
@@ -147,14 +148,3 @@ class Deployment:
                 excluded = True
                 break
         return excluded
-
-
-def main(argz):
-    deployment = Deployment()
-
-    # relative to the django_src path
-    deployment.copy_app_contents(source=os.path.join(ROOT_DIR, "src"))
-
-
-if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
