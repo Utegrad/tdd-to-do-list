@@ -41,23 +41,24 @@ directory_names = [
 ]
 
 example_secrets_value: str = (
-        '{"SECRET_KEY":"some_super_secret_key",'
-        + '"DATABASE_URL":"database_string",'
-        + '"APP_PATH":"/foo/bar/app/path",'
-        + '"VENV_PATH":"/foo/bar/Envs/tdd",'
-        + '"STATIC_PATH":"/foo/bar/static/tdd",'
-        + '"MEDIA_PATH":"/foo/bar/media/TDD",'
-        + '"DEBUG":"false",'
-        + '"INTERNAL_IPS":"127.0.0.1",'
-        + '"ALLOWED_HOSTS":"localhost,127.0.0.1,foo.bar.com"}'
+    '{"SECRET_KEY":"some_super_secret_key",'
+    + '"DATABASE_URL":"database_string",'
+    + '"APP_PATH":"/foo/bar/app/path",'
+    + '"VENV_PATH":"/foo/bar/Envs/tdd",'
+    + '"STATIC_PATH":"/foo/bar/static/tdd",'
+    + '"MEDIA_PATH":"/foo/bar/media/TDD",'
+    + '"DEBUG":"false",'
+    + '"INTERNAL_IPS":"127.0.0.1",'
+    + '"ALLOWED_HOSTS":"localhost,127.0.0.1,foo.bar.com",'
+    + '"DJANGO_SETTINGS_DIR":"some/directory"}'
 )
 
 example_env_content: str = (
-        "DEBUG=false\r"
-        + "SECRET_KEY=some_super_secret_key\r"
-        + "DATABASE_URL=database_string\r"
-        + "INTERNAL_IPS=127.0.0.1\r"
-        + "ALLOWED_HOSTS=localhost,127.0.0.1,foo.bar.com\r"
+    "DEBUG=false\r"
+    + "SECRET_KEY=some_super_secret_key\r"
+    + "DATABASE_URL=database_string\r"
+    + "INTERNAL_IPS=127.0.0.1\r"
+    + "ALLOWED_HOSTS=localhost,127.0.0.1,foo.bar.com\r"
 )
 
 expected_env_content = [(example_secrets_value, example_env_content)]
@@ -119,5 +120,5 @@ def test_copy_env_file_calls_put(secrets):
         with mock.patch("deploy.deployment.get_secrets") as m_get_secrets:
             m_get_secrets.return_value = (secrets, None)
             d = Deployment()
-            d.copy_env_file('env_file')
+            d.copy_env_file("env_file")
             m_connection.put.assert_called_once()
