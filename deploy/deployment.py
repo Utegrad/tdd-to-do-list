@@ -1,7 +1,6 @@
 import json
 import os
 import re
-import sys
 
 from fabric import Connection
 from invoke import UnexpectedExit
@@ -24,6 +23,7 @@ EXCLUDED_DIRECTORY_PATTERNS = (
 )
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 class SecretKeys:
     def __init__(self):
@@ -59,10 +59,11 @@ class Deployment:
         self.secrets = get_secrets(self.app_secrets_name, self.region_name)
         self.app_secrets = json.loads(self.secrets[0])
         self.app_path = self.app_secrets[self.secret_keys.APPLICATION_PATH]
-        self.django_src = os.path.join(ROOT_DIR, 'src') if django_src is None else django_src
+        self.django_src = (
+            os.path.join(ROOT_DIR, "src") if django_src is None else django_src
+        )
 
-    # TODO create a .env file with the data from secrets manager and copy it to {app_path}/django_tdd_tutorial
-    # TODO incorporate calling write_env_file to local file system
+    # TODO .env file may need line endings fixed
     # TODO copy local env file to app_path
     # TODO gather static files into the right directory
     # TODO Run migrations
@@ -79,12 +80,12 @@ class Deployment:
         filtered_values = self.env_file_filter_values()
         content = ""
         for attr, value in filtered_values.items():
-            content = content + f'{attr.lstrip().rstrip()}={value.lstrip().rstrip()}\r'
+            content = content + f"{attr.lstrip().rstrip()}={value.lstrip().rstrip()}\r"
         return content
 
     def write_env_file(self, path):
         contents = self.env_file_content()
-        with open(path, 'w') as writer:
+        with open(path, "w") as writer:
             writer.writelines(contents)
 
     def copy_contents_recursive(
@@ -136,7 +137,9 @@ class Deployment:
                 except UnexpectedExit as e:
                     print("ignoring UnexpectedExit exception when removing directories")
                     print(f"{e.result}")
-                self.copy_contents_recursive(django_source, django_source, application_path, conn)
+                self.copy_contents_recursive(
+                    django_source, django_source, application_path, conn
+                )
             except Exception as e:
                 raise e
 
