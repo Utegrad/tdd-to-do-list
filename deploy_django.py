@@ -13,6 +13,7 @@ def main(argz):
     # relative to the django_src path
     deployment.copy_app_contents()
     deployment.write_env_file(env_file)
+    deployment.copy_env_file(env_file)
 
 
 if __name__ == '__main__':

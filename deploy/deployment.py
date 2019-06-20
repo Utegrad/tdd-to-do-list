@@ -26,6 +26,8 @@ ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class SecretKeys:
+    """ Using these to match keys in Secrets Manager to access their values. """
+
     def __init__(self):
         self.SECRET_KEY = "SECRET_KEY"
         self.DATABASE_URL = "DATABASE_URL"
@@ -36,9 +38,12 @@ class SecretKeys:
         self.DEBUG = "DEBUG"
         self.INTERNAL_IPS = "INTERNAL_IPS"
         self.ALLOWED_HOSTS = "ALLOWED_HOSTS"
+        self.DJANGO_SETTINGS_DIR = "DJANGO_SETTINGS_DIR"
 
 
 class DotEnvKeys:
+    """ Keys that need to be included in the .env settings file. """
+
     def __init__(self):
         self.keys_ = (
             "DEBUG",
@@ -151,3 +156,17 @@ class Deployment:
                 excluded = True
                 break
         return excluded
+
+    def copy_env_file(self, env_file):
+        env_file_destination = (
+            self.app_path
+            + "/"
+            + self.app_secrets[self.secret_keys.DJANGO_SETTINGS_DIR]
+            + "/"
+            + ".env"
+        )
+        with Connection(host=self.ssh_host, user=self.ssh_username) as conn:
+            try:
+                conn.put(env_file, env_file_destination)
+            except Exception as e:
+                raise e
