@@ -1,6 +1,7 @@
-# TODO STATIC_ROOT in settings
 # TODO refresh the venv
 # TODO gather static files into the right directory
 # TODO Run migrations
 # TODO restart apache
 
+06-20-2019 21:51
+next steps: continue deployment steps from stubbed methods and to-do list

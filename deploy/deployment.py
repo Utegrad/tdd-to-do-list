@@ -165,8 +165,13 @@ class Deployment:
             try:
                 result = conn.put(env_file, env_file_destination)
                 print(f'{result.local} copied to {result.remote}')
+                os.remove(env_file)
             except Exception as e:
                 raise e
+
+    def refresh_venv(self):
+        """ Refresh virtualenv in VIRTUALENV_PATH. """
+        pass
 
     def gather_static_files(self):
         """ Run collectstatic on remote. """
@@ -174,12 +179,12 @@ class Deployment:
 
         pass
 
-    def refresh_venv(self):
-        """ Refresh virtualenv in VIRTUALENV_PATH. """
-        pass
-
     def django_migrations(self):
         """ run django migrations. """
+        pass
+
+    def django_check(self):
+        """ run manage.py check """
         pass
 
     def restart_apache(self):
