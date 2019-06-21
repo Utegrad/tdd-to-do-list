@@ -68,8 +68,6 @@ class Deployment:
             os.path.join(ROOT_DIR, "src") if django_src is None else django_src
         )
 
-    # TODO .env file may need line endings fixed
-    # TODO copy local env file to app_path
     # TODO gather static files into the right directory
     # TODO Run migrations
     # TODO restart apache
@@ -167,6 +165,7 @@ class Deployment:
         )
         with Connection(host=self.ssh_host, user=self.ssh_username) as conn:
             try:
-                conn.put(env_file, env_file_destination)
+                result = conn.put(env_file, env_file_destination)
+                print(f'{result.local} copied to {result.remote}')
             except Exception as e:
                 raise e
