@@ -45,8 +45,8 @@ example_secrets_value: str = (
     + '"DATABASE_URL":"database_string",'
     + '"APP_PATH":"/foo/bar/app/path",'
     + '"VENV_PATH":"/foo/bar/Envs/tdd",'
-    + '"STATIC_PATH":"/foo/bar/static/tdd",'
-    + '"MEDIA_PATH":"/foo/bar/media/TDD",'
+    + '"STATIC_ROOT":"/foo/bar/static/tdd/",'
+    + '"MEDIA_ROOT":"/foo/bar/media/tdd/",'
     + '"DEBUG":"false",'
     + '"INTERNAL_IPS":"127.0.0.1",'
     + '"ALLOWED_HOSTS":"localhost,127.0.0.1,foo.bar.com",'
@@ -59,6 +59,8 @@ example_env_content: str = (
     + "DATABASE_URL=database_string\r"
     + "INTERNAL_IPS=127.0.0.1\r"
     + "ALLOWED_HOSTS=localhost,127.0.0.1,foo.bar.com\r"
+    + "STATIC_ROOT=/foo/bar/static/tdd/\r"
+    + "MEDIA_ROOT=/foo/bar/media/tdd/\r"
 )
 
 expected_env_content = [(example_secrets_value, example_env_content)]
@@ -85,6 +87,8 @@ def test_env_file_values_for_DotEnvKeys(mock_get_secrets, secrets):
         "DATABASE_URL": "database_string",
         "INTERNAL_IPS": "127.0.0.1",
         "ALLOWED_HOSTS": "localhost,127.0.0.1,foo.bar.com",
+        "STATIC_ROOT": "/foo/bar/static/tdd/",
+        "MEDIA_ROOT": "/foo/bar/media/tdd/",
     }
     mock_get_secrets.return_value = (get_secrets_string, None)
     deployment = Deployment()

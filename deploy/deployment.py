@@ -33,8 +33,8 @@ class SecretKeys:
         self.DATABASE_URL = "DATABASE_URL"
         self.APPLICATION_PATH = "APP_PATH"
         self.VIRTUALENV_PATH = "VENV_PATH"
-        self.STATICFILES_PATH = "STATIC_PATH"
-        self.MEDIA_PATH = "MEDIA_PATH"
+        self.STATIC_ROOT = "STATIC_ROOT"
+        self.MEDIA_ROOT = "MEDIA_ROOT"
         self.DEBUG = "DEBUG"
         self.INTERNAL_IPS = "INTERNAL_IPS"
         self.ALLOWED_HOSTS = "ALLOWED_HOSTS"
@@ -51,6 +51,8 @@ class DotEnvKeys:
             "DATABASE_URL",
             "INTERNAL_IPS",
             "ALLOWED_HOSTS",
+            "STATIC_ROOT",
+            "MEDIA_ROOT",
         )
 
 
@@ -67,10 +69,6 @@ class Deployment:
         self.django_src = (
             os.path.join(ROOT_DIR, "src") if django_src is None else django_src
         )
-
-    # TODO gather static files into the right directory
-    # TODO Run migrations
-    # TODO restart apache
 
     def env_file_filter_values(self):
         env_keys = DotEnvKeys().keys_
@@ -92,7 +90,7 @@ class Deployment:
             writer.writelines(contents)
 
     def copy_contents_recursive(
-        self, container, original_container, new_container, connection
+            self, container, original_container, new_container, connection
     ):
         contents = [os.path.join(container, p) for p in os.listdir(container)]
         for item in contents:
@@ -157,11 +155,11 @@ class Deployment:
 
     def copy_env_file(self, env_file):
         env_file_destination = (
-            self.app_path
-            + "/"
-            + self.app_secrets[self.secret_keys.DJANGO_SETTINGS_DIR]
-            + "/"
-            + ".env"
+                self.app_path
+                + "/"
+                + self.app_secrets[self.secret_keys.DJANGO_SETTINGS_DIR]
+                + "/"
+                + ".env"
         )
         with Connection(host=self.ssh_host, user=self.ssh_username) as conn:
             try:
@@ -169,3 +167,20 @@ class Deployment:
                 print(f'{result.local} copied to {result.remote}')
             except Exception as e:
                 raise e
+
+    def gather_static_files(self):
+        """ Run collectstatic on remote. """
+        # /var/www/apps/Envs/tdd/bin/python /var/www/apps/tdd/manage.py collectstatic --clear --noinput
+
+        pass
+
+    def refresh_venv(self):
+        """ Refresh virtualenv in VIRTUALENV_PATH. """
+        pass
+
+    def django_migrations(self):
+        """ run django migrations. """
+        pass
+
+    def restart_apache(self):
+        pass

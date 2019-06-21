@@ -83,6 +83,10 @@ DEBUG = env('DEBUG')
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (ROOT_DIR('static'), )
+STATIC_ROOT = env("STATIC_ROOT")
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = env("MEDIA_ROOT")
 
 ALLOWED_HOSTS = env('ALLOWED_HOSTS')
 DEBUG_TOOLBAR_PATCH_SETTINGS = False

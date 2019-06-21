@@ -1,0 +1,3 @@
+django_environ==0.4.5
+Django==2.2.1
+environ==1.0

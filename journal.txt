@@ -1,0 +1,6 @@
+# TODO STATIC_ROOT in settings
+# TODO refresh the venv
+# TODO gather static files into the right directory
+# TODO Run migrations
+# TODO restart apache
+
