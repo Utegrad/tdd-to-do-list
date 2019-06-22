@@ -82,7 +82,7 @@ DEBUG = env('DEBUG')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (ROOT_DIR('static'), )
+STATICFILES_DIRS = ( os.path.normpath(os.path.join(BASE_DIR, 'static')), )
 STATIC_ROOT = env("STATIC_ROOT")
 
 MEDIA_URL = '/media/'

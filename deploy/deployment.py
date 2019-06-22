@@ -69,6 +69,14 @@ class Deployment:
         self.django_src = (
             os.path.join(ROOT_DIR, "src") if django_src is None else django_src
         )
+        self.python_path = None
+        self.virtualenv_path = self.app_secrets[self.secret_keys.VIRTUALENV_PATH]
+        self._set_python_path()
+
+
+    def _set_python_path(self):
+        self.python_path = f'{self.virtualenv_path}' \
+            + 'bin/python'
 
     def env_file_filter_values(self):
         env_keys = DotEnvKeys().keys_
@@ -156,7 +164,6 @@ class Deployment:
     def copy_env_file(self, env_file):
         env_file_destination = (
                 self.app_path
-                + "/"
                 + self.app_secrets[self.secret_keys.DJANGO_SETTINGS_DIR]
                 + "/"
                 + ".env"
@@ -172,21 +179,39 @@ class Deployment:
 
     def refresh_venv(self):
         """ Refresh virtualenv in VIRTUALENV_PATH. """
-        pass
+        with Connection(host=self.ssh_host, user=self.ssh_username) as conn:
+            print(f"Removing virutalenv from {self.virtualenv_path}.")
+            conn.run(f"rm -rf {self.app_secrets[self.secret_keys.VIRTUALENV_PATH]}")
+            print(f"Generating virtualenv at {self.virtualenv_path}")
+            conn.run(f"python3 -m virtualenv {self.virtualenv_path}")
+            print(f"Installing python packages in virtualenv")
+            conn.run(f"{self.python_path} -m pip install -r {self.app_path + 'requirements.txt'}")
+
+    def _run_manage(self, manage_cmd):
+        with Connection(host=self.ssh_host, user=self.ssh_username) as conn:
+            try:
+                result = conn.run(f"{self.python_path} {self.app_path + 'manage.py'} {manage_cmd}")
+                print(result)
+            except Exception as e:
+                raise e
 
     def gather_static_files(self):
         """ Run collectstatic on remote. """
-        # /var/www/apps/Envs/tdd/bin/python /var/www/apps/tdd/manage.py collectstatic --clear --noinput
-
-        pass
+        print("Running collectstatic")
+        self._run_manage("collectstatic --noinput")
 
     def django_migrations(self):
         """ run django migrations. """
-        pass
+        print("Running migrate")
+        self._run_manage("migrate")
 
     def django_check(self):
         """ run manage.py check """
-        pass
+        print("Running 'check'")
+        self._run_manage("check")
 
     def restart_apache(self):
-        pass
+        print("Restarting apache")
+        with Connection(host=self.ssh_host, user=self.ssh_username) as conn:
+            result = conn.run(f'sudo service httpd restart')
+            print(result)

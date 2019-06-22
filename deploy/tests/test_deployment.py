@@ -43,8 +43,8 @@ directory_names = [
 example_secrets_value: str = (
     '{"SECRET_KEY":"some_super_secret_key",'
     + '"DATABASE_URL":"database_string",'
-    + '"APP_PATH":"/foo/bar/app/path",'
-    + '"VENV_PATH":"/foo/bar/Envs/tdd",'
+    + '"APP_PATH":"/foo/bar/app/path/",'
+    + '"VENV_PATH":"/foo/bar/Envs/tdd/",'
     + '"STATIC_ROOT":"/foo/bar/static/tdd/",'
     + '"MEDIA_ROOT":"/foo/bar/media/tdd/",'
     + '"DEBUG":"false",'

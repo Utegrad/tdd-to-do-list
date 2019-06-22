@@ -14,6 +14,10 @@ def main(argz):
     deployment.copy_app_contents()
     deployment.write_env_file(env_file)
     deployment.copy_env_file(env_file)
+    deployment.refresh_venv()
+    deployment.gather_static_files()
+    deployment.django_migrations()
+    deployment.restart_apache()
 
 
 if __name__ == '__main__':
