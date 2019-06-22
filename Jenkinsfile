@@ -15,7 +15,7 @@ pipeline {
     stages {
         stage ('Checkout') {
             steps {
-                slackSend color: 'good', message: "Build Started - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+                slackSend message: "Build Started - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
                 checkout scm
             }
         }
@@ -41,6 +41,7 @@ pipeline {
         stage ('Test') {
             steps {
                 echo 'Running tests'
+                slackSend color: 'good', message: "Complete - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
             }
         }
     }
