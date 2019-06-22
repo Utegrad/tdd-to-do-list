@@ -199,7 +199,7 @@ class Deployment:
     def gather_static_files(self):
         """ Run collectstatic on remote. """
         print("Running collectstatic")
-        self._run_manage("collectstatic -v 3 --noinput --clear")
+        self._run_manage("collectstatic --noinput --clear")
 
     def django_migrations(self):
         """ run django migrations. """
