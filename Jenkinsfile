@@ -12,9 +12,9 @@ pipeline {
         REGION_NAME = 'us-east-1'
         DEPLOY_VENV_PATH = 'Envs/deploy'
     }
-    stages {
-        try {
-            notifyBuild('STARTED')
+    try {
+        notifyBuild('STARTED')
+        stages {
             stage ('Checkout') {
                 steps {
                     checkout scm
@@ -45,14 +45,14 @@ pipeline {
                 }
             }
         }
-        catch (e) {
-            // If there was an exception thrown, the build failed
-            currentBuild.result = "FAILED"
-            throw e
-        }
-        finally {
-            notifyBuild(currentBuild.result)
-        }
+    }
+    catch (e) {
+        // If there was an exception thrown, the build failed
+        currentBuild.result = "FAILED"
+        throw e
+    }
+    finally {
+        notifyBuild(currentBuild.result)
     }
 }
 
