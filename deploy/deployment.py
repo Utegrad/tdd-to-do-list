@@ -73,7 +73,6 @@ class Deployment:
         self.virtualenv_path = self.app_secrets[self.secret_keys.VIRTUALENV_PATH]
         self._set_python_path()
 
-
     def _set_python_path(self):
         self.python_path = f'{self.virtualenv_path}' \
             + 'bin/python'

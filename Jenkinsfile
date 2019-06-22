@@ -24,12 +24,13 @@ pipeline {
                 sh 'python3 --version'
                 echo 'Configure virtualenv'
                 sh 'virtualenv ${WORKSPACE}/${DEPLOY_VENV_PATH}'
-                sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/pip install -r ${WORKSPACE}/deploy/requirements.txt'
+                sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/pip install -r ${WORKSPACE}/requirements.txt'
             }
         }
         stage ('Unit Tests') {
             steps {
                 echo "Running unit tests."
+                sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/pytest deploy --disable-warnings --junit-xml=./build_reports/deploy/deploy.xml'
             }
         }
         stage ('Deploy') {

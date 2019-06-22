@@ -1,0 +1,10 @@
+Django==2.2.2
+selenium==3.141.0
+django_environ==0.4.5
+Django==2.2.2
+environ==1.0
+fabric==2.4.0
+botocore==1.12.165
+boto3==1.9.165
+pytest==4.6.3
+invoke==1.2.0

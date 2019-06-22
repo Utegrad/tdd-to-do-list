@@ -1,5 +1,6 @@
 */my-local-sqlite.db
 .env
+build_reports/*
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Python template
