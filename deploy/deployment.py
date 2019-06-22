@@ -166,6 +166,7 @@ class Deployment:
                 result = conn.put(env_file, env_file_destination)
                 print(f'{result.local} copied to {result.remote}')
                 os.remove(env_file)
+                print(f"Removed temporary local environ file: {env_file}")
             except Exception as e:
                 raise e
 
