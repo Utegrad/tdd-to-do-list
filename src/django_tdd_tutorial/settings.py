@@ -1,7 +1,7 @@
 import os
 import environ
 
-ROOT_DIR = environ.Path(os.path.abspath('')) - 1  # (src/django_tdd_tutorial/settings.py - 1 = src/)
+ROOT_DIR = environ.Path(os.path.abspath(__file__)) - 2  # (src/django_tdd_tutorial/settings.py - 2 = src/)
 env = environ.Env(
     DEBUG=(bool, False),
     ALLOWED_HOSTS=(list, []),
@@ -83,7 +83,7 @@ DEBUG = env('DEBUG')
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 STATIC_URL = '/static/'
 STATICFILES_DIRS = ( os.path.normpath(os.path.join(BASE_DIR, 'static')), )
-STATIC_ROOT = env("STATIC_ROOT")
+STATIC_ROOT = os.path.normpath(env("STATIC_ROOT"))
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = env("MEDIA_ROOT")

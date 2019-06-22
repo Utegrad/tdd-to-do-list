@@ -190,15 +190,16 @@ class Deployment:
     def _run_manage(self, manage_cmd):
         with Connection(host=self.ssh_host, user=self.ssh_username) as conn:
             try:
-                result = conn.run(f"{self.python_path} {self.app_path + 'manage.py'} {manage_cmd}")
-                print(result)
+                run_cmd = f"{self.python_path} {self.app_path + 'manage.py'} {manage_cmd}"
+                print(run_cmd)
+                conn.run(run_cmd)
             except Exception as e:
                 raise e
 
     def gather_static_files(self):
         """ Run collectstatic on remote. """
         print("Running collectstatic")
-        self._run_manage("collectstatic --noinput")
+        self._run_manage("collectstatic -v 3 --noinput --clear")
 
     def django_migrations(self):
         """ run django migrations. """
