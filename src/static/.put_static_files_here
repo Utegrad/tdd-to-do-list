@@ -1,0 +1,2 @@
+This file needs to be here to get the static director into the root of the django project to satisfy
+the collectstatic command
