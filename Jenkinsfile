@@ -56,6 +56,11 @@ pipeline {
             }
         }
     }
+    post {
+        always {
+            junit 'build_reports/**/*.xml'
+        }
+    }
 }
 
 def notifyBuild(String buildStatus = 'STARTED') {
