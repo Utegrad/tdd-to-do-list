@@ -12,47 +12,37 @@ pipeline {
         REGION_NAME = 'us-east-1'
         DEPLOY_VENV_PATH = 'Envs/deploy'
     }
-    try {
-        notifyBuild('STARTED')
-        stages {
-            stage ('Checkout') {
-                steps {
-                    checkout scm
-                }
+    notifyBuild('STARTED')
+    stages {
+        stage ('Checkout') {
+            steps {
+                checkout scm
             }
-            stage ('Setup') {
-                steps {
-                    sh 'python3 --version'
-                    echo 'Configure virtualenv'
-                    sh 'virtualenv ${WORKSPACE}/${DEPLOY_VENV_PATH}'
-                    sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/pip install -r ${WORKSPACE}/deploy/requirements.txt'
-                }
+        }
+        stage ('Setup') {
+            steps {
+                sh 'python3 --version'
+                echo 'Configure virtualenv'
+                sh 'virtualenv ${WORKSPACE}/${DEPLOY_VENV_PATH}'
+                sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/pip install -r ${WORKSPACE}/deploy/requirements.txt'
             }
-            stage ('Deploy') {
-                steps {
-                    sshagent(['b12f5eac-0b8c-4bae-844c-b4275a8cf4b6']) {
-                        echo 'Deploying application'
-                        sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/python ${WORKSPACE}/deploy_django.py'
+        }
+        stage ('Deploy') {
+            steps {
+                sshagent(['b12f5eac-0b8c-4bae-844c-b4275a8cf4b6']) {
+                    echo 'Deploying application'
+                    sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/python ${WORKSPACE}/deploy_django.py'
 
-                        sh 'git tag -a v_${BUILD_NUMBER}b -m "Jenking Build #${BUILD_NUMBER}"'
-                        sh 'git push origin --tags'
-                    }
-                }
-            }
-            stage ('Test') {
-                steps {
-                    echo 'Running tests'
+                    sh 'git tag -a v_${BUILD_NUMBER}b -m "Jenking Build #${BUILD_NUMBER}"'
+                    sh 'git push origin --tags'
                 }
             }
         }
-    }
-    catch (e) {
-        // If there was an exception thrown, the build failed
-        currentBuild.result = "FAILED"
-        throw e
-    }
-    finally {
-        notifyBuild(currentBuild.result)
+        stage ('Test') {
+            steps {
+                echo 'Running tests'
+            }
+        }
     }
 }
 
