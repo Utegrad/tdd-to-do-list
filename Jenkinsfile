@@ -15,7 +15,6 @@ pipeline {
     stages {
         stage ('Checkout') {
             steps {
-                notifyBuild('STARTED')
                 checkout scm
             }
         }
