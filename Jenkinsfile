@@ -12,10 +12,10 @@ pipeline {
         REGION_NAME = 'us-east-1'
         DEPLOY_VENV_PATH = 'Envs/deploy'
     }
-    notifyBuild('STARTED')
     stages {
         stage ('Checkout') {
             steps {
+                notifyBuild('STARTED')
                 checkout scm
             }
         }
