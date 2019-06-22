@@ -1,7 +1,7 @@
-# TODO refresh the venv
-# TODO gather static files into the right directory
-# TODO Run migrations
-# TODO restart apache
+
+06-22-2019 15:04
+Deployment to beta server working.
+Add stages to Jenkinsfile
 
 06-20-2019 21:51
 next steps: continue deployment steps from stubbed methods and to-do list

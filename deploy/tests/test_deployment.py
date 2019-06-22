@@ -54,13 +54,13 @@ example_secrets_value: str = (
 )
 
 example_env_content: str = (
-    "DEBUG=false\r"
-    + "SECRET_KEY=some_super_secret_key\r"
-    + "DATABASE_URL=database_string\r"
-    + "INTERNAL_IPS=127.0.0.1\r"
-    + "ALLOWED_HOSTS=localhost,127.0.0.1,foo.bar.com\r"
-    + "STATIC_ROOT=/foo/bar/static/tdd/\r"
-    + "MEDIA_ROOT=/foo/bar/media/tdd/\r"
+    "DEBUG=false\n"
+    + "SECRET_KEY=some_super_secret_key\n"
+    + "DATABASE_URL=database_string\n"
+    + "INTERNAL_IPS=127.0.0.1\n"
+    + "ALLOWED_HOSTS=localhost,127.0.0.1,foo.bar.com\n"
+    + "STATIC_ROOT=/foo/bar/static/tdd/\n"
+    + "MEDIA_ROOT=/foo/bar/media/tdd/\n"
 )
 
 expected_env_content = [(example_secrets_value, example_env_content)]

@@ -27,6 +27,11 @@ pipeline {
                 sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/pip install -r ${WORKSPACE}/deploy/requirements.txt'
             }
         }
+        stage ('Unit Tests') {
+            steps {
+                echo "Running unit tests."
+            }
+        }
         stage ('Deploy') {
             steps {
                 sshagent(['b12f5eac-0b8c-4bae-844c-b4275a8cf4b6']) {
@@ -38,9 +43,14 @@ pipeline {
                 }
             }
         }
-        stage ('Test') {
+        stage ('Funtional Tests') {
             steps {
-                echo 'Running tests'
+                echo 'Running functional tests'
+
+            }
+        }
+        stage ('Finish') {
+            steps {
                 slackSend color: 'good', message: "Complete - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
             }
         }

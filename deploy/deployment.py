@@ -89,7 +89,7 @@ class Deployment:
         filtered_values = self.env_file_filter_values()
         content = ""
         for attr, value in filtered_values.items():
-            content = content + f"{attr.lstrip().rstrip()}={value.lstrip().rstrip()}\r"
+            content = content + f"{attr.lstrip().rstrip()}={value.lstrip().rstrip()}\n"
         return content
 
     def write_env_file(self, path):
