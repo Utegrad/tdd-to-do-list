@@ -14,7 +14,7 @@
         {%  csrf_token %}
     </form>
     {% for item in list.item_set.all %}
-        <div class="row, text-center" id="id_item_row_{{ forloop.counter }}">
+        <div id="id_item_row_{{ forloop.counter }}">
             {{ forloop.counter }}: {{ item.text }}
         </div>
     {% endfor %}

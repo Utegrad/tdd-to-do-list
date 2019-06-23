@@ -35,6 +35,9 @@ class NavigationTest(StaticLiveServerTestCase):
 
     @contextmanager
     def wait_for_page_load(self, timeout=IMPLICIT_WAIT):
+        """ Wait for a page load.
+            Taken from: http://www.obeythetestinggoat.com/how-to-get-selenium-to-wait-for-page-load-after-a-click.html
+        """
         old_page = self.browser.find_element_by_tag_name('html')
         yield
         WebDriverWait(self.browser, timeout).until(
@@ -78,13 +81,13 @@ class NavigationTest(StaticLiveServerTestCase):
         with self.wait_for_page_load():
             input_box.send_keys(Keys.ENTER)
 
-        # should now have two rows with '1: Buy a peacock feather' and 2: Use a peacock feather to make a fly')
+        # should now have two entries with '1: Buy a peacock feather' and 2: Use a peacock feather to make a fly')
         current_url = self.browser.current_url
         try:
-            row_elements = WebDriverWait(self.browser, MAX_WAIT)\
-                .until(ec.presence_of_all_elements_located((By.CLASS_NAME, 'row')))
+            div_elements = WebDriverWait(self.browser, MAX_WAIT)\
+                .until((ec.presence_of_all_elements_located((By.XPATH, '//*[contains(@id, id_item_row_)]'))))
             for d in display_strings:
-                self.assertIn(d, [r.text for r in row_elements])
+                self.assertIn(d, [e.text for e in div_elements])
         except TimeoutException:
             self.fail(f'Timeout waiting for rows with {display_strings}')
 
