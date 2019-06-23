@@ -2,17 +2,17 @@ import sys
 import time
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
+from functional_tests.helpers import wait
 
 IMPLICIT_WAIT = 5
 MAX_WAIT = 8
-HOME_PAGE_TITLE = 'To-Do'
+HOME_PAGE_TITLE = 'To-Do - Home'
 
 
-class NavigationTest(LiveServerTestCase):
+class NavigationTest(StaticLiveServerTestCase):
     @classmethod
     def setUpClass(cls):
         for arg in sys.argv:
@@ -29,11 +29,6 @@ class NavigationTest(LiveServerTestCase):
     def tearDown(self):
         self.browser.refresh()
         self.browser.quit()
-
-    def check_for_row_in_list_table(self, row_text):
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn(row_text, [row.text for row in rows])
 
     def wait_for_row_in_list_table(self, row_text):
         start_time = time.time()
@@ -54,7 +49,7 @@ class NavigationTest(LiveServerTestCase):
         self.browser.get(self.live_server_url)
         self.assertIn(HOME_PAGE_TITLE, self.browser.title)
 
-        header_text = self.browser.find_element_by_tag_name('h1').text
+        header_text = self.browser.find_element_by_tag_name('h3').text
         self.assertIn('To-Do', header_text)
 
         input_box = self.browser.find_element_by_id('id_new_item')
@@ -65,14 +60,25 @@ class NavigationTest(LiveServerTestCase):
 
         input_box.send_keys('Buy a peacock feather')
         input_box.send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table('1: Buy a peacock feather')
+        wait(lambda: self.assertContains(
+            [r.text for r in self.browser.find_elements_by_class_name("row")],
+            '1: Buy a peacock feather'
+            )
+        )
+        # should have a row with '1: Buy a peacock feather'
+        wait(lambda: self.assertContains(
+            [r.text for r in rows if r.text == '1: Buy a peacock feather'],
+            '1: Buy a peacock feather'
+        ))
+
+        # self.wait_for_row_in_list_table('1: Buy a peacock feather')
 
         input_box = self.browser.find_element_by_id('id_new_item')
         input_box.send_keys('Use peacock feather to make a fly')
         input_box.send_keys(Keys.ENTER)
 
-        self.wait_for_row_in_list_table('2: Use peacock feather to make a fly')
-        self.wait_for_row_in_list_table('1: Buy a peacock feather')
+        # self.wait_for_row_in_list_table('2: Use peacock feather to make a fly')
+        # self.wait_for_row_in_list_table('1: Buy a peacock feather')
 
 
     def test_multiple_users_can_start_lists_at_different_urls(self):
@@ -82,7 +88,7 @@ class NavigationTest(LiveServerTestCase):
         input_box = self.browser.find_element_by_id('id_new_item')
         input_box.send_keys('Buy a peacock feather')
         input_box.send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table('1: Buy a peacock feather')
+        # self.wait_for_row_in_list_table('1: Buy a peacock feather')
 
         # first user list has unique URL
         first_user_list_url = self.browser.current_url
@@ -102,7 +108,7 @@ class NavigationTest(LiveServerTestCase):
         input_box = self.browser.find_element_by_id('id_new_item')
         input_box.send_keys('buy milk')
         input_box.send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table('1: buy milk')
+        # self.wait_for_row_in_list_table('1: buy milk')
 
         # second user list gets own URL
         second_user_list_url = self.browser.current_url
@@ -136,19 +142,6 @@ class NewVisitorTest(StaticLiveServerTestCase):
         self.browser.refresh()
         self.browser.quit()
 
-    def wait_for_row_in_list_table(self, row_text):
-        start_time = time.time()
-        while True:
-            try:
-                table = self.browser.find_element_by_id('id_list_table')
-                rows = table.find_elements_by_tag_name('tr')
-                self.assertIn(row_text, [row.text for row in rows])
-                return
-            except (AssertionError, WebDriverException) as e:
-                if time.time() - start_time > MAX_WAIT:
-                    raise e
-                time.sleep(0.5)
-
     def test_layout_and_styling(self):
         # smoke test to check style sheets load
         self.browser.get(self.live_server_url)
@@ -162,7 +155,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
         )
         input_box.send_keys('testing')
         input_box.send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table('1: testing')
+        row_1 = self.browser.find_element_by_id('id_item_row_1')
         input_box = self.browser.find_element_by_id('id_new_item')
         self.assertAlmostEqual(
             input_box.location['x'] + input_box.size['width'] / 2,

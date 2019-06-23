@@ -1,20 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>To-Do</title>
-</head>
-<body>
-    <h1>Your To-Do List</h1>
+{% extends 'lists/base.html' %}
+{% load staticfiles %}
+{% block title %}To-Do - List{% endblock %}
+
+{% block row_1 %}
+<div class="text-center">
+    <h3>Your To-Do List</h3>
+</div>
+{% endblock %}
+{% block row_2 %}
+<div class="text-center">
     <form method="post" action="/lists/{{ list.id }}/add_item">
         <input name="item_text" id="id_new_item" placeholder="Enter a to-do item"/>
         {%  csrf_token %}
     </form>
-
-    <table id="id_list_table">
-        {% for item in list.item_set.all %}
-        <tr><td>{{ forloop.counter }}: {{ item.text }}</td></tr>
-        {% endfor %}
-    </table>
-</body>
-</html>
+    {% for item in list.item_set.all %}
+        <div class="row, text-center" id="id_item_row_{{ forloop.counter }}">
+            {{ forloop.counter }}: {{ item.text }}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

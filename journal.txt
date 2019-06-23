@@ -2,6 +2,8 @@
 06-22-2019 15:04
 Deployment to beta server working.
 Add stages to Jenkinsfile
+Add static files, bootstrap, template inheritance
+Working on rewriting functional test for change to using bootstrap instead of table for list items.
 
 06-20-2019 21:51
 next steps: continue deployment steps from stubbed methods and to-do list

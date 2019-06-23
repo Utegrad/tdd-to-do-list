@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+
+    {% block standard_static_sources %}
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
+    <script src="{% static 'jquery/js/jquery-3.4.1.js' %}"></script>
+    <script src="{% static 'popper/js/popper.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    {% endblock %}
+
+    {% block extra_static_sources %}
+    {% endblock %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    {% block body_content %}
+    <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm">
+                    {% block row_1 %}
+                    {% endblock %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm">
+                    {% block row_2 %}
+                    {% endblock %}
+                </div>
+            </div>
+    </div>
+    {% endblock %}
+</body>
+</html>
