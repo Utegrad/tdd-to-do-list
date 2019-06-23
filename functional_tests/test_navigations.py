@@ -1,3 +1,4 @@
+import os
 import sys
 from contextlib import contextmanager
 
@@ -29,6 +30,9 @@ class NavigationTest(StaticLiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Firefox()
+        dev_server = os.environ.get('DEV_SERVER')
+        if dev_server:
+            self.live_server_url = f'http://{dev_server}/'
         self.browser.implicitly_wait(IMPLICIT_WAIT)
 
     def tearDown(self):
@@ -137,6 +141,9 @@ class NewVisitorTest(StaticLiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Firefox()
+        dev_server = os.environ.get('DEV_SERVER')
+        if dev_server:
+            self.live_server_url = f'http://{dev_server}'
         self.browser.implicitly_wait(IMPLICIT_WAIT)
 
     def tearDown(self):
