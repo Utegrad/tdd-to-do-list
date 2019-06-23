@@ -1,17 +1,31 @@
 import time
 
-from selenium.common.exceptions import WebDriverException
 
-MAX_WAIT = 5
-
-
-def wait(fn):
+def wait_for(condition_function):
     start_time = time.time()
-    while True:
-        try:
-            return fn()
-        except (AssertionError, WebDriverException) as e:
-            if time.time() - start_time > MAX_WAIT:
-                raise e
-            time.sleep(0.5)
+    while time.time() < start_time + 3:
+        if condition_function():
+            return True
+        else:
+            time.sleep(0.1)
+    raise Exception(
+        'Timeout waiting for {}'.format(condition_function.__name__)
+    )
+
+
+class WaitForPageLoad(object):
+
+    def __init__(self, browser):
+        self.browser = browser
+
+    def __enter__(self):
+        self.old_page = self.browser.find_element_by_tag_name('html')
+
+    def page_has_loaded(self):
+        new_page = self.browser.find_element_by_tag_name('html')
+        return new_page.id != self.old_page.id
+
+    def __exit__(self):
+        wait_for(self.page_has_loaded)
+
 
