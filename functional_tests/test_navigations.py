@@ -136,6 +136,19 @@ class NewVisitorTest(StaticLiveServerTestCase):
         self.browser.refresh()
         self.browser.quit()
 
+    def wait_for_row_in_list_table(self, row_text):
+        start_time = time.time()
+        while True:
+            try:
+                table = self.browser.find_element_by_id('id_list_table')
+                rows = table.find_elements_by_tag_name('tr')
+                self.assertIn(row_text, [row.text for row in rows])
+                return
+            except (AssertionError, WebDriverException) as e:
+                if time.time() - start_time > MAX_WAIT:
+                    raise e
+                time.sleep(0.5)
+
     def test_layout_and_styling(self):
         # smoke test to check style sheets load
         self.browser.get(self.live_server_url)
@@ -146,4 +159,13 @@ class NewVisitorTest(StaticLiveServerTestCase):
             input_box.location['x'] + input_box.size['width'] / 2,
             512,
             delta=10
+        )
+        input_box.send_keys('testing')
+        input_box.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table('1: testing')
+        input_box = self.browser.find_element_by_id('id_new_item')
+        self.assertAlmostEqual(
+            input_box.location['x'] + input_box.size['width'] / 2,
+            512,
+            delta=10,
         )
