@@ -10,6 +10,8 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.expected_conditions import staleness_of
 from selenium.webdriver.support.ui import WebDriverWait
 
+from functional_tests.helpers import wait_for_page_load
+
 IMPLICIT_WAIT = 5
 MAX_WAIT = 8
 HOME_PAGE_TITLE = 'To-Do - Home'
@@ -97,8 +99,8 @@ class NavigationTest(StaticLiveServerTestCase):
         # enter first item for list
         input_box = self.browser.find_element_by_id('id_new_item')
         input_box.send_keys('Buy a peacock feather')
-        input_box.send_keys(Keys.ENTER)
-        # self.wait_for_row_in_list_table('1: Buy a peacock feather')
+        with self.wait_for_page_load():
+            input_box.send_keys(Keys.ENTER)
 
         # first user list has unique URL
         first_user_list_url = self.browser.current_url
@@ -117,8 +119,8 @@ class NavigationTest(StaticLiveServerTestCase):
         # second user starts a list
         input_box = self.browser.find_element_by_id('id_new_item')
         input_box.send_keys('buy milk')
-        input_box.send_keys(Keys.ENTER)
-        # self.wait_for_row_in_list_table('1: buy milk')
+        with self.wait_for_page_load():
+            input_box.send_keys(Keys.ENTER)
 
         # second user list gets own URL
         second_user_list_url = self.browser.current_url
@@ -164,7 +166,8 @@ class NewVisitorTest(StaticLiveServerTestCase):
             delta=10
         )
         input_box.send_keys('testing')
-        input_box.send_keys(Keys.ENTER)
+        with wait_for_page_load(self.browser):
+            input_box.send_keys(Keys.ENTER)
         row_1 = self.browser.find_element_by_id('id_item_row_1')
         input_box = self.browser.find_element_by_id('id_new_item')
         self.assertAlmostEqual(
