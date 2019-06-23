@@ -35,17 +35,6 @@ class NavigationTest(StaticLiveServerTestCase):
         self.browser.refresh()
         self.browser.quit()
 
-    @contextmanager
-    def wait_for_page_load(self, timeout=IMPLICIT_WAIT):
-        """ Wait for a page load.
-            Taken from: http://www.obeythetestinggoat.com/how-to-get-selenium-to-wait-for-page-load-after-a-click.html
-        """
-        old_page = self.browser.find_element_by_tag_name('html')
-        yield
-        WebDriverWait(self.browser, timeout).until(
-            staleness_of(old_page)
-        )
-
     # browse the home page
     # home page title is correct
     def test_home_page(self):
@@ -65,7 +54,7 @@ class NavigationTest(StaticLiveServerTestCase):
         input_string = 'Buy a peacock feather'
         display_string = f'1: {input_string}'
         input_box.send_keys(input_string)
-        with self.wait_for_page_load():
+        with wait_for_page_load(self.browser):
             input_box.send_keys(Keys.ENTER)
         # should have a row with '1: Buy a peacock feather'
         current_url = self.browser.current_url
@@ -80,7 +69,7 @@ class NavigationTest(StaticLiveServerTestCase):
         input_string = 'Use a peacock feather to make a fly'
         display_strings = [display_string, f'2: {input_string}']
         input_box.send_keys(input_string)
-        with self.wait_for_page_load():
+        with wait_for_page_load(self.browser):
             input_box.send_keys(Keys.ENTER)
 
         # should now have two entries with '1: Buy a peacock feather' and 2: Use a peacock feather to make a fly')
@@ -99,7 +88,7 @@ class NavigationTest(StaticLiveServerTestCase):
         # enter first item for list
         input_box = self.browser.find_element_by_id('id_new_item')
         input_box.send_keys('Buy a peacock feather')
-        with self.wait_for_page_load():
+        with wait_for_page_load(self.browser):
             input_box.send_keys(Keys.ENTER)
 
         # first user list has unique URL
@@ -119,7 +108,7 @@ class NavigationTest(StaticLiveServerTestCase):
         # second user starts a list
         input_box = self.browser.find_element_by_id('id_new_item')
         input_box.send_keys('buy milk')
-        with self.wait_for_page_load():
+        with wait_for_page_load(self.browser):
             input_box.send_keys(Keys.ENTER)
 
         # second user list gets own URL
