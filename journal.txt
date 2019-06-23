@@ -1,3 +1,6 @@
+06-23-2019 12:39:
+Usable wait_for_page_to_load function to use with functional tests and some changes to lists.html template
+next - back to tutorial
 
 06-22-2019 15:04
 Deployment to beta server working.
