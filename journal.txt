@@ -6,6 +6,7 @@
 Usable wait_for_page_to_load function to use with functional tests and some changes to lists.html template
 next - back to tutorial
 configure functional tests to optionally use env variable "DEV_SERVER" for running tests against the "dev" server
+from src dir `pytest functional_tests` or `pytest lists` runs django tests
 
 
 06-22-2019 15:04

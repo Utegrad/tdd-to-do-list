@@ -1,8 +1,12 @@
 from unittest import TestCase
+
+import pytest
+
 from lists.models import Item, List
 
 
 class ListModelTest(TestCase):
+    @pytest.mark.django_db
     def test_saving_and_retrieving_lists(self):
         first_item_text = 'first item'
         second_item_text = 'second item'
@@ -34,6 +38,7 @@ class ListModelTest(TestCase):
 
 
 class ItemModelTest(TestCase):
+    @pytest.mark.django_db
     def test_saving_and_retrieving_items(self):
         first_item_text = 'The first (ever) list item'
         second_item_text = 'Item the second'
