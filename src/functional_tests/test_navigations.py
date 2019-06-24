@@ -1,6 +1,5 @@
 import os
 import sys
-from contextlib import contextmanager
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
@@ -8,7 +7,6 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.support.expected_conditions import staleness_of
 from selenium.webdriver.support.ui import WebDriverWait
 
 from functional_tests.helpers import wait_for_page_load
@@ -30,9 +28,9 @@ class NavigationTest(StaticLiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Firefox()
-        dev_server = os.environ.get('DEV_SERVER')
-        if dev_server:
-            self.live_server_url = f'http://{dev_server}/'
+        beta_server = os.environ.get('BETA_SERVER')
+        if beta_server:
+            self.live_server_url = f'http://{beta_server}/'
         self.browser.implicitly_wait(IMPLICIT_WAIT)
 
     def tearDown(self):
@@ -141,9 +139,9 @@ class NewVisitorTest(StaticLiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Firefox()
-        dev_server = os.environ.get('DEV_SERVER')
-        if dev_server:
-            self.live_server_url = f'http://{dev_server}'
+        beta_server = os.environ.get('BETA_SERVER')
+        if beta_server:
+            self.live_server_url = f'http://{beta_server}'
         self.browser.implicitly_wait(IMPLICIT_WAIT)
 
     def tearDown(self):
