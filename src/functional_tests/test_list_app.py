@@ -1,6 +1,7 @@
 import os
 import sys
 import pytest
+import re
 
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
@@ -22,10 +23,19 @@ def url_to_test():
 
 
 @pytest.fixture()
-def browser():
+def browser() -> webdriver:
     browser = webdriver.Firefox()
     yield browser
     browser.quit()
+
+
+def almost_equal(value, reference, delta):
+    result = False
+    upper_limit = reference + delta
+    lower_limit = reference - delta
+    if lower_limit <= value <= upper_limit:
+        result = True
+    return result
 
 
 def test_home_page(browser, url_to_test):
@@ -82,7 +92,7 @@ def test_multiple_users_can_start_lists_at_different_urls(browser, url_to_test):
 
     # first user list has unique URL
     first_user_list_url = browser.current_url
-    self.assertRegex(first_user_list_url, '/lists/.+')
+    assert re.search(r'/lists/.+', first_user_list_url)
 
     ## Second user - new browser session
     browser.quit()
@@ -102,7 +112,7 @@ def test_multiple_users_can_start_lists_at_different_urls(browser, url_to_test):
 
     # second user list gets own URL
     second_user_list_url = browser.current_url
-    self.assertRegex(second_user_list_url, '/lists/.+')
+    assert re.search(r'/lists/.+', second_user_list_url)
     assert second_user_list_url != first_user_list_url
 
     # first user list not shown to second user
@@ -110,4 +120,24 @@ def test_multiple_users_can_start_lists_at_different_urls(browser, url_to_test):
     assert 'Buy a peacock feather' not in page_text
     assert 'buy milk' in page_text
 
+    browser.quit()
     pytest.fail('WIP')
+
+
+def test_layout_and_styling(browser, url_to_test):
+    # smoke test to check style sheets load
+    browser.get(url_to_test)
+    browser.set_window_size(1024, 768)
+
+    input_box = browser.find_element_by_id('id_new_item')
+    assert almost_equal(input_box.location['x'] + input_box.size['width'] / 2,
+                        512, 10)
+
+    input_box.send_keys('testing')
+    with wait_for_page_load(browser):
+        input_box.send_keys(Keys.ENTER)
+    row_1 = browser.find_element_by_id('id_item_row_1')
+    input_box = browser.find_element_by_id('id_new_item')
+    assert almost_equal(input_box.location['x'] + input_box.size['width'] / 2,
+                        512, 10)
+    browser.quit()
