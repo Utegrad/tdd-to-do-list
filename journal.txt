@@ -1,6 +1,9 @@
 # TODO change functional tests to run against local dev server or beta server so that build server can run tests
 #   after a deployment
 
+06-25-2019 20:25
+working on rewriting functional tests with pytest so it can use a dev server or a external server
+    need to change assertRegex to assert {regex match ...}
 
 06-23-2019 12:39:
 Usable wait_for_page_to_load function to use with functional tests and some changes to lists.html template
