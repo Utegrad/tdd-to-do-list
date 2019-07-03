@@ -19,7 +19,7 @@
       <excludeFolder url="file://$MODULE_DIR$/venv" />
       <excludeFolder url="file://$MODULE_DIR$/venv_3.7" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.7 (django_tdd_tutorial)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.6 (tdd-tutorial)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TemplatesService">
