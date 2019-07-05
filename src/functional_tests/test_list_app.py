@@ -1,5 +1,7 @@
 import os
 import sys
+from copy import copy
+
 import pytest
 import re
 
@@ -9,6 +11,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.firefox.options import Options
 
 from functional_tests.helpers import wait_for_page_load
 
@@ -24,7 +27,9 @@ def url_to_test():
 
 @pytest.fixture()
 def browser() -> webdriver:
-    browser = webdriver.Firefox()
+    ops = Options()
+    ops.headless = True
+    browser = webdriver.Firefox(options=ops)
     yield browser
     browser.quit()
 
@@ -95,8 +100,7 @@ def test_multiple_users_can_start_lists_at_different_urls(browser, url_to_test):
     assert re.search(r'/lists/.+', first_user_list_url)
 
     ## Second user - new browser session
-    browser.quit()
-    browser = webdriver.Firefox()
+    browser.delete_all_cookies()
 
     # second user does see first user's list items
     browser.get(url_to_test)
@@ -121,7 +125,6 @@ def test_multiple_users_can_start_lists_at_different_urls(browser, url_to_test):
     assert 'buy milk' in page_text
 
     browser.quit()
-    pytest.fail('WIP')
 
 
 def test_layout_and_styling(browser, url_to_test):

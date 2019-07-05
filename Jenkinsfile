@@ -31,8 +31,7 @@ pipeline {
             steps {
                 echo "Running unit tests."
                 sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/pytest deploy --disable-warnings --junit-xml=./build_reports/deploy/deploy.xml'
-                // TODO needs a .env file for django tests to work on the build server
-                // sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/python ${WORKSPACE}/src/manage.py test lists'
+                sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/python ${WORKSPACE}/django_unittests.py
             }
         }
         stage ('Deploy') {
@@ -49,7 +48,7 @@ pipeline {
         stage ('Funtional Tests') {
             steps {
                 echo 'Running functional tests'
-
+                // sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/pytest src/functional_tests/test_list_app.py --disable-warnings --tb=short --junit-xml=./build_reports/functional_tests/functional_tests.xml'
             }
         }
         stage ('Finish') {
