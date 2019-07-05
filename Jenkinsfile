@@ -31,7 +31,7 @@ pipeline {
             steps {
                 echo "Running unit tests."
                 sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/pytest deploy --disable-warnings --junit-xml=./build_reports/deploy/deploy.xml'
-                sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/python ${WORKSPACE}/django_unittests.py
+                sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/python ${WORKSPACE}/django_unittests.py'
             }
         }
         stage ('Deploy') {
