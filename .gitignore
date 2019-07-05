@@ -1,6 +1,8 @@
 */my-local-sqlite.db
 .env
 build_reports/*
+.idea/django_tdd_tutorial.iml
+.idea/misc.xml
 
 
 # Created by .ignore support plugin (hsz.mobi)
