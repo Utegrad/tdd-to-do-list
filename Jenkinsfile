@@ -50,10 +50,7 @@ pipeline {
         stage ('Funtional Tests') {
             steps {
                 echo 'Running functional tests'
-                // using pytest from jenkins user env so I don't have to deal with pytest-django plugin
-                // pytest and geckodriver installed in Jenkins agent user path
-                sh 'pytest ${WORKSPACE}/src/functional_tests/test_list_app.py --disable-warnings --tb=short --junit-xml=./build_reports/functional_tests/functional_tests.xml'
-                // sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/pytest src/functional_tests/test_list_app.py --disable-warnings --tb=short --junit-xml=./build_reports/functional_tests/functional_tests.xml'
+                sh 'PYTEST_DISABLE_PLUGIN_AUTOLOAD=True ${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/pytest src/functional_tests/test_list_app.py --disable-warnings --tb=short --junit-xml=./build_reports/functional_tests/functional_tests.xml'
             }
         }
         stage ('Finish') {
