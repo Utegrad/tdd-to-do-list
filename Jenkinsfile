@@ -50,7 +50,7 @@ pipeline {
         stage ('Funtional Tests') {
             steps {
                 echo 'Running functional tests'
-                // sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/pytest src/functional_tests/test_list_app.py --disable-warnings --tb=short --junit-xml=./build_reports/functional_tests/functional_tests.xml'
+                sh '${WORKSPACE}/${DEPLOY_VENV_PATH}/bin/pytest src/functional_tests/test_list_app.py --disable-warnings --tb=short --junit-xml=./build_reports/functional_tests/functional_tests.xml'
             }
         }
         stage ('Finish') {

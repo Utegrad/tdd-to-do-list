@@ -1,17 +1,13 @@
-import os
-import sys
-from copy import copy
-
-import pytest
 import re
 
+import pytest
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.firefox.options import Options
 
 from functional_tests.helpers import wait_for_page_load
 
