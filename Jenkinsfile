@@ -1,7 +1,9 @@
 #!groovy​
 
 pipeline {
-    agent { T3400 }
+    agent {
+      label 'T3400'
+    }
     environment {
         AWS_ACCESS_KEY_ID     = credentials('jenkins-aws-secret-key-id')
         AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
