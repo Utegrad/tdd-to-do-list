@@ -1,3 +1,4 @@
+import os
 import re
 
 import pytest
@@ -18,7 +19,8 @@ HOME_PAGE_TITLE = 'To-Do - Home'
 
 @pytest.fixture()
 def url_to_test():
-    return 'http://tdd.utegrads.com/'
+    test_url = os.environ.get('TEST_URL')
+    return test_url if test_url else 'http://tdd.utegrads.com'
 
 
 @pytest.fixture()

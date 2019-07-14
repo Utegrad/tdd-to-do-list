@@ -41,7 +41,7 @@ ROOT_URLCONF = 'django_tdd_tutorial.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ ROOT_DIR('templates'), ],
+        'DIRS': [ROOT_DIR('templates'), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -67,10 +67,10 @@ DATABASES = {
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    { 'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
-    { 'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
-    { 'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
-    { 'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', },
 ]
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -82,7 +82,9 @@ DEBUG = env('DEBUG')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 STATIC_URL = '/static/'
-STATICFILES_DIRS = ( os.path.normpath(os.path.join(BASE_DIR, 'static')), )
+STATICFILES_DIRS = [
+    os.path.normpath(os.path.join(BASE_DIR, 'static')),
+]
 STATIC_ROOT = os.path.normpath(env("STATIC_ROOT"))
 
 MEDIA_URL = '/media/'
