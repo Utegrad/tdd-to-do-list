@@ -1,4 +1,6 @@
+from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
+
 from lists.models import Item, List
 
 
@@ -13,7 +15,12 @@ def view_list(request, list_id):
 
 def new_list(request):
     _list = List.objects.create()
-    Item.objects.create(text=request.POST['item_text'], list=_list)
+    item = Item.objects.create(text=request.POST['item_text'], list=_list)
+    try:
+        item.full_clean()
+    except ValidationError:
+        error_msg = "List items can't be blank"
+        return render(request, 'lists/home.html', {'error': error_msg})
     return redirect(f'/lists/{_list.id}/')
 
 

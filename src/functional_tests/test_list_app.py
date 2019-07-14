@@ -26,7 +26,8 @@ def url_to_test():
 @pytest.fixture()
 def browser() -> webdriver:
     ops = Options()
-    ops.headless = True
+    show_browser = os.environ.get("SHOW_BROWSER")
+    ops.headless = False if show_browser else True
     browser = webdriver.Firefox(options=ops)
     yield browser
     browser.quit()
@@ -142,3 +143,12 @@ def test_layout_and_styling(browser, url_to_test):
     assert almost_equal(input_box.location['x'] + input_box.size['width'] / 2,
                         512, 10)
     browser.quit()
+
+
+def test_blank_list_item_entered_gives_error(browser, url_to_test):
+    browser.get(url_to_test)
+    input_box = browser.find_element_by_id('id_new_item')
+    with wait_for_page_load(browser):
+        input_box.send_keys(Keys.ENTER)
+    row_1 = browser.find_element_by_id('id_item_row_1')
+    assert 'error' in row_1.text

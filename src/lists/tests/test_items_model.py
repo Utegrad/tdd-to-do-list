@@ -1,4 +1,5 @@
 from unittest import TestCase
+from django.core.exceptions import ValidationError
 
 import pytest
 
@@ -55,9 +56,17 @@ class ItemModelTest(TestCase):
         second_item.save()
 
         saved_items = Item.objects.all()
-        self.assertEqual(saved_items.count(), 2)
+        self.assertGreaterEqual(saved_items.count(), 2)
 
         first_saved_item = saved_items[0]
         second_saved_item = saved_items[1]
         self.assertEqual(first_saved_item.text, first_item_text)
         self.assertEqual(second_saved_item.text, second_item_text)
+
+    @pytest.mark.django_db
+    def test_cannot_save_empty_list_items(self):
+        list_ = List.objects.create()
+        item = Item(list=list_, text='')
+        with self.assertRaises(ValidationError):
+            item.full_clean()
+            item.save()
