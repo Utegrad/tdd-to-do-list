@@ -46,8 +46,8 @@ def test_home_page(browser, url_to_test):
     assert HOME_PAGE_TITLE in browser.title
     current_url = browser.current_url
 
-    header_text = browser.find_element_by_tag_name('h3').text
-    assert 'To-Do' in header_text
+    header_text = browser.find_element_by_class_name('lists-heading').text
+    assert 'New List' in header_text
 
     input_box = browser.find_element_by_id('id_new_item')
     assert input_box.get_attribute('placeholder') == 'Enter a to-do item'
