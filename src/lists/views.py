@@ -18,7 +18,9 @@ def new_list(request):
     item = Item.objects.create(text=request.POST['item_text'], list=_list)
     try:
         item.full_clean()
+        item.save()
     except ValidationError:
+        _list.delete()
         error_msg = "List items can't be blank"
         return render(request, 'lists/home.html', {'error': error_msg})
     return redirect(f'/lists/{_list.id}/')
