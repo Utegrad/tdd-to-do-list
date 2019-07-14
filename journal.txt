@@ -1,5 +1,8 @@
-# TODO change functional tests to run against local dev server or beta server so that build server can run tests
-#   after a deployment
+07-13-2019 23:05
+installed a jenkins agent server to run functional tests from.  Unit tests couldn't be run on PET110 because the system
+    sqlite install is too old.  Running the tests on a newer box is much easier.  Deployment still to PET110 from
+    new agent box.  Should have a decent CI/CD chain for further work.  # TODO clean out scripts not used during CI/CD?
+    Need to get back to Django tutorial.
 
 06-25-2019 20:25
 working on rewriting functional tests with pytest so it can use a dev server or a external server
