@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.urls import reverse
 
 from lists.models import Item, List
 

@@ -152,3 +152,22 @@ def test_home_page_blank_list_item_entered_gives_error(browser, url_to_test):
         input_box.send_keys(Keys.ENTER)
     help_block = browser.find_element_by_class_name('help-block')
     assert 'blank' in help_block.text
+
+
+def test_blank_list_item_entered_for_existing_list_gives_error(browser, url_to_test):
+    browser.get(url_to_test)
+    input_box = browser.find_element_by_id('id_new_item')
+    item_1_text = 'item 1'
+    input_box.send_keys(item_1_text)
+    with wait_for_page_load(browser):
+        input_box.send_keys(Keys.ENTER)
+    input_box = browser.find_element_by_id('id_new_item')
+    row_1 = browser.find_element_by_id('id_item_row_1')
+    assert item_1_text in row_1.text
+    with wait_for_page_load(browser):
+        input_box.send_keys(Keys.ENTER)
+    help_block = browser.find_element_by_class_name('help-block')
+    assert 'blank' in help_block.text
+    # TODO this is probably wrong because the view for an existing list shouldn't
+    #   redirect to the home page, and the help message hasn't been implemented
+    #   for the list view yet
