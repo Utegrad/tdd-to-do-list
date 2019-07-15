@@ -8,7 +8,7 @@ class ListViewTest(TestCase):
 
     def test_view_list_uses_list_template(self):
         _list = List.objects.create(name='foo')
-        response = self.client.get(f'/lists/{_list.id}/')
+        response = self.client.get(reverse('lists:view_list', args=[_list.id]))
         self.assertTemplateUsed(response, 'lists/list.html')
 
     def test_displays_only_items_for_a_list(self):
@@ -19,7 +19,7 @@ class ListViewTest(TestCase):
         Item.objects.create(text='item a', list=other_list)
         Item.objects.create(text='item b', list=other_list)
 
-        response = self.client.get(f'/lists/{correct_list.id}/')
+        response = self.client.get(reverse('lists:view_list', args=[correct_list.id]))
 
         self.assertContains(response, 'item 1')
         self.assertContains(response, 'item 2')
@@ -29,5 +29,5 @@ class ListViewTest(TestCase):
     def test_passes_correct_list_to_template(self):
         other_list = List.objects.create(name='some list')
         correct_list = List.objects.create(name='correct list')
-        response = self.client.get(f'/lists/{correct_list.id}/')
+        response = self.client.get(reverse('lists:view_list', args=[correct_list.id]))
         self.assertEqual(response.context['list'], correct_list)

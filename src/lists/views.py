@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
+from django.urls import reverse
 
 from lists.models import Item, List
 
@@ -23,10 +24,10 @@ def new_list(request):
         _list.delete()
         error_msg = "List items can't be blank"
         return render(request, 'lists/home.html', {'error': error_msg})
-    return redirect(f'/lists/{_list.id}/')
+    return redirect(reverse('lists:view_list', args=[_list.id, ]))
 
 
 def add_item(request, list_id):
     _list = List.objects.get(id=list_id)
     Item.objects.create(text=request.POST['item_text'], list=_list)
-    return redirect(f'/lists/{_list.id}/')
+    return redirect(reverse('lists:view_list', args=[_list.id, ]))

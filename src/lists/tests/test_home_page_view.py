@@ -28,7 +28,7 @@ class NewListTest(TestCase):
     def test_redirects_after_POST(self):
         response = self.client.post(reverse('lists:new_list'), data={'item_text': 'A new list item'})
         new_list = List.objects.first()
-        self.assertRedirects(response, f'/lists/{new_list.id}/')
+        self.assertRedirects(response, reverse('lists:view_list', args=[new_list.id]))
 
     def test_validate_errors_are_sent_back_to_home_page_template(self):
         response = self.client.post(reverse('lists:new_list'), data={'item_text': ''})
@@ -53,7 +53,7 @@ class NewItemTestCase(TestCase):
 
         # add one item
         self.client.post(
-            f'/lists/{correct_list.id}/add_item',
+            reverse('lists:add_item', args=[correct_list.id, ]),
             data={'item_text': correct_list_item_text}
         )
 
@@ -71,8 +71,8 @@ class NewItemTestCase(TestCase):
         correct_list = List.objects.create(name=correct_list_name)
 
         response = self.client.post(
-            f'/lists/{correct_list.id}/add_item',
+            reverse('lists:add_item', args=[correct_list.id, ]),
             data={'item_text': correct_list_item_text}
         )
 
-        self.assertRedirects(response, f'/lists/{correct_list.id}/')
+        self.assertRedirects(response, reverse('lists:view_list', args=[correct_list.id]))
