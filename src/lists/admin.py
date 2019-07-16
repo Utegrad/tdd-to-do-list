@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import List, Item
 
-# Register your models here.
+my_models = [Item, List, ]
+
+admin.site.register(my_models)

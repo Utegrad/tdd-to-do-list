@@ -9,7 +9,7 @@
 {% endblock %}
 {% block row_2 %}
 <div class="text-center">
-    <form method="post" action="/lists/{{ list.id }}/add_item">
+    <form method="post" action="{% url 'lists:add_item' list.id %}">
         <input name="item_text" id="id_new_item" class="form-control input-lg" placeholder="Enter a to-do item"/>
         {%  csrf_token %}
     </form>
