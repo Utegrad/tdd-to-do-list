@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
+from django.utils.html import escape
 
 from lists.models import Item, List
 
@@ -63,3 +64,14 @@ class ListViewTest(TestCase):
         )
 
         self.assertRedirects(response, reverse('lists:view_list', args=[correct_list.id]))
+
+    def test_validation_errors_shown_on_lists_page(self):
+        _list = List.objects.create()
+        response = self.client.post(
+            reverse('lists:view_list', args=[_list.id, ]),
+            data={'item_text': ''}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'lists/list.html')
+        expected_error = escape("List items can't be blank")
+        self.assertContains(response, expected_error)

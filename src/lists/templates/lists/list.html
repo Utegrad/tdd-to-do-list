@@ -10,8 +10,7 @@
 {% block row_2 %}
 <div class="text-center">
     <form method="post" action="{% url 'lists:view_list' list.id %}">
-        <input name="item_text" id="id_new_item" class="form-control input-lg" placeholder="Enter a to-do item"/>
-        {%  csrf_token %}
+    {% include 'lists/list_form_input.html' %}
     </form>
     {% for item in list.item_set.all %}
         <div id="id_item_row_{{ forloop.counter }}" class="lists-item">
