@@ -1,9 +1,8 @@
-{% load crispy_forms_tags %}
 
 {%  csrf_token %}
-{{ form | crispy }}
-{% if error %}
+{{ form.text }}
+{% if form.errors %}
     <div class="form-group has-error">
-        <span class="help-block">{{ error }}</span>
+        <span class="help-block">{{ form.text.errors }}</span>
     </div>
 {% endif %}

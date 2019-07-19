@@ -17,6 +17,10 @@ MAX_WAIT = 8
 HOME_PAGE_TITLE = 'To-Do - Home'
 
 
+def get_item_input_box(browser):
+    return browser.find_element_by_id('id_text')
+
+
 @pytest.fixture()
 def url_to_test():
     test_url = os.environ.get('TEST_URL')
@@ -50,7 +54,7 @@ def test_home_page(browser, url_to_test):
     header_text = browser.find_element_by_class_name('lists-heading').text
     assert 'New List' in header_text
 
-    input_box = browser.find_element_by_id('id_new_item')
+    input_box = get_item_input_box(browser)
     assert input_box.get_attribute('placeholder') == 'Enter a to-do item'
 
     input_string = 'Buy a peacock feather'
@@ -67,7 +71,7 @@ def test_home_page(browser, url_to_test):
     except TimeoutException:
         pytest.fail(f'Time out when waiting for row with "{display_string}"')
 
-    input_box = browser.find_element_by_id('id_new_item')
+    input_box = get_item_input_box(browser)
     input_string = 'Use a peacock feather to make a fly'
     display_strings = [display_string, f'2: {input_string}']
     input_box.send_keys(input_string)
@@ -89,7 +93,7 @@ def test_multiple_users_can_start_lists_at_different_urls(browser, url_to_test):
     # first user starts a list
     browser.get(url_to_test)
     # enter first item for list
-    input_box = browser.find_element_by_id('id_new_item')
+    input_box = get_item_input_box(browser)
     input_box.send_keys('Buy a peacock feather')
     with wait_for_page_load(browser):
         input_box.send_keys(Keys.ENTER)
@@ -108,7 +112,7 @@ def test_multiple_users_can_start_lists_at_different_urls(browser, url_to_test):
     assert 'Use a peacock feather to make a fly' not in page_text
 
     # second user starts a list
-    input_box = browser.find_element_by_id('id_new_item')
+    input_box = get_item_input_box(browser)
     input_box.send_keys('buy milk')
     with wait_for_page_load(browser):
         input_box.send_keys(Keys.ENTER)
@@ -131,7 +135,7 @@ def test_layout_and_styling(browser, url_to_test):
     browser.get(url_to_test)
     browser.set_window_size(1024, 768)
 
-    input_box = browser.find_element_by_id('id_new_item')
+    input_box = get_item_input_box(browser)
     assert almost_equal(input_box.location['x'] + input_box.size['width'] / 2,
                         512, 10)
 
@@ -139,7 +143,7 @@ def test_layout_and_styling(browser, url_to_test):
     with wait_for_page_load(browser):
         input_box.send_keys(Keys.ENTER)
     row_1 = browser.find_element_by_id('id_item_row_1')
-    input_box = browser.find_element_by_id('id_new_item')
+    input_box = get_item_input_box(browser)
     assert almost_equal(input_box.location['x'] + input_box.size['width'] / 2,
                         512, 10)
     browser.quit()
@@ -147,7 +151,7 @@ def test_layout_and_styling(browser, url_to_test):
 
 def test_home_page_blank_list_item_entered_gives_error(browser, url_to_test):
     browser.get(url_to_test)
-    input_box = browser.find_element_by_id('id_new_item')
+    input_box = get_item_input_box(browser)
     with wait_for_page_load(browser):
         input_box.send_keys(Keys.ENTER)
     help_block = browser.find_element_by_class_name('help-block')
@@ -156,12 +160,12 @@ def test_home_page_blank_list_item_entered_gives_error(browser, url_to_test):
 
 def test_blank_list_item_entered_for_existing_list_gives_error(browser, url_to_test):
     browser.get(url_to_test)
-    input_box = browser.find_element_by_id('id_new_item')
+    input_box = get_item_input_box(browser)
     item_1_text = 'item 1'
     input_box.send_keys(item_1_text)
     with wait_for_page_load(browser):
         input_box.send_keys(Keys.ENTER)
-    input_box = browser.find_element_by_id('id_new_item')
+    input_box = get_item_input_box(browser)
     row_1 = browser.find_element_by_id('id_item_row_1')
     assert item_1_text in row_1.text
     with wait_for_page_load(browser):

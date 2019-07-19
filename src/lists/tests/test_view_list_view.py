@@ -42,7 +42,7 @@ class ListViewTest(TestCase):
         # add one item
         self.client.post(
             reverse('lists:view_list', args=[correct_list.id, ]),
-            data={'item_text': correct_list_item_text}
+            data={'text': correct_list_item_text}
         )
 
         # check only one item exists, check that item is the only item in the list
@@ -60,7 +60,7 @@ class ListViewTest(TestCase):
 
         response = self.client.post(
             reverse('lists:view_list', args=[correct_list.id, ]),
-            data={'item_text': correct_list_item_text}
+            data={'text': correct_list_item_text}
         )
 
         self.assertRedirects(response, reverse('lists:view_list', args=[correct_list.id]))
@@ -69,7 +69,7 @@ class ListViewTest(TestCase):
         _list = List.objects.create()
         response = self.client.post(
             reverse('lists:view_list', args=[_list.id, ]),
-            data={'item_text': ''}
+            data={'text': ''}
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'lists/list.html')
