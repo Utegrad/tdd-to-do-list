@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import resolve, reverse
 from django.utils.html import escape
 
+from lists.forms import ItemForm
 from lists.models import Item, List
 from lists.views import home_page
 
@@ -15,6 +16,10 @@ class HomePageTest(TestCase):
     def test_home_page_uses_home_template(self):
         response = self.client.get(reverse('home'))
         self.assertTemplateUsed(response, 'lists/home.html')
+
+    def test_home_page_uses_item_form(self):
+        response = self.client.get(reverse('home'))
+        self.assertIsInstance(response.context['form'], ItemForm)
 
 
 class NewListTest(TestCase):

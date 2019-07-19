@@ -1,5 +1,7 @@
-<input name="item_text" id="id_new_item" placeholder="Enter a to-do item" class="form-control input-lg"/>
+{% load crispy_forms_tags %}
+
 {%  csrf_token %}
+{{ form | crispy }}
 {% if error %}
     <div class="form-group has-error">
         <span class="help-block">{{ error }}</span>
