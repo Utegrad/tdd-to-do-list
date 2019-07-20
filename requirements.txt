@@ -9,4 +9,4 @@ boto3==1.9.165
 pytest==4.6.3
 invoke==1.2.0
 pytest-django==3.5.0
-
+django-crispy-forms==1.7.2
