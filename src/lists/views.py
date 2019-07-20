@@ -12,29 +12,21 @@ def home_page(request):
 
 def view_list(request, list_id):
     _list = List.objects.get(id=list_id)
+    form = ItemForm()
     error = None
     if request.method == 'POST':
-        try:
-            item = Item(text=request.POST['text'], list=_list)
-            item.full_clean()
-            item.save()
-            return redirect(reverse('lists:view_list', args=[_list.id, ]))
-        except ValidationError:
-            error = "List items can't be blank"
-    return render(request, 'lists/list.html', {'list': _list,
-                                               'error': error,
-                                               'form': ItemForm()})
+        form = ItemForm(data=request.POST)
+        if form.is_valid():
+            Item.objects.create(text=request.POST['text'], list=_list)
+            return redirect(_list)
+    return render(request, 'lists/list.html', {'list': _list, 'form': form})
 
 
 def new_list(request):
-    _list = List.objects.create()
-    item = Item.objects.create(text=request.POST['text'], list=_list)
-    try:
-        item.full_clean()
-        item.save()
-    except ValidationError:
-        _list.delete()
-        error_msg = "List items can't be blank"
-        return render(request, 'lists/home.html', {'error': error_msg,
-                                                   'form': ItemForm()})
-    return redirect(reverse('lists:view_list', args=[_list.id, ]))
+    form = ItemForm(data=request.POST)
+    if form.is_valid():
+        list_ = List.objects.create()
+        Item.objects.create(text=request.POST['text'], list=list_)
+        return redirect(list_)
+    else:
+        return render(request, 'lists/home.html', {'form': form})

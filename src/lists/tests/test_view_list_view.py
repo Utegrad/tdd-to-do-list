@@ -2,10 +2,18 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.html import escape
 
+from lists.forms import ItemForm, EMPTY_ITEM_ERROR
 from lists.models import Item, List
 
 
 class ListViewTest(TestCase):
+
+    def post_invalid_input(self):
+        list_ = List.objects.create()
+        return self.client.post(
+            reverse('lists:view_list', args=[list_.id, ]),
+            data={'text': ''}
+        )
 
     def test_view_list_uses_list_template(self):
         _list = List.objects.create(name='foo')
@@ -65,13 +73,25 @@ class ListViewTest(TestCase):
 
         self.assertRedirects(response, reverse('lists:view_list', args=[correct_list.id]))
 
-    def test_validation_errors_shown_on_lists_page(self):
-        _list = List.objects.create()
-        response = self.client.post(
-            reverse('lists:view_list', args=[_list.id, ]),
-            data={'text': ''}
-        )
+    def test_displays_item_form(self):
+        list_ = List.objects.create()
+        response = self.client.get(reverse('lists:view_list', args=[list_.id, ]))
+        self.assertIsInstance(response.context['form'], ItemForm)
+        self.assertContains(response, 'name="text"')
+
+    def test_for_invalid_input_nothing_saved_to_db(self):
+        self.post_invalid_input()
+        self.assertEqual(Item.objects.count(), 0)
+
+    def test_for_invalid_input_renders_list_template(self):
+        response = self.post_invalid_input()
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'lists/list.html')
-        expected_error = escape("List items can't be blank")
-        self.assertContains(response, expected_error)
+
+    def test_for_invalid_input_passes_form_to_template(self):
+        response = self.post_invalid_input()
+        self.assertIsInstance(response.context['form'], ItemForm)
+
+    def test_for_invalid_input_shows_error_on_page(self):
+        response = self.post_invalid_input()
+        self.assertContains(response, escape(EMPTY_ITEM_ERROR))
