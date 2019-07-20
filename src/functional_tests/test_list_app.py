@@ -10,11 +10,16 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
-from functional_tests.helpers import wait_for_page_load
+from functional_tests.helpers import wait_for_page_load, wait
 
 IMPLICIT_WAIT = 5
 MAX_WAIT = 8
 HOME_PAGE_TITLE = 'To-Do - Home'
+
+
+@wait
+def wait_for(fn):
+    return fn()
 
 
 def get_item_input_box(browser):
@@ -65,7 +70,7 @@ def test_home_page(browser, url_to_test):
     # should have a row with '1: Buy a peacock feather'
     current_url = browser.current_url
     try:
-        row_elements = WebDriverWait(browser, MAX_WAIT)\
+        row_elements = WebDriverWait(browser, MAX_WAIT) \
             .until(ec.presence_of_all_elements_located((By.CLASS_NAME, 'row')))
         assert display_string in [r.text for r in row_elements]
     except TimeoutException:
@@ -81,7 +86,7 @@ def test_home_page(browser, url_to_test):
     # should now have two entries with '1: Buy a peacock feather' and 2: Use a peacock feather to make a fly')
     current_url = browser.current_url
     try:
-        div_elements = WebDriverWait(browser, MAX_WAIT)\
+        div_elements = WebDriverWait(browser, MAX_WAIT) \
             .until((ec.presence_of_all_elements_located((By.XPATH, '//*[contains(@id, id_item_row_)]'))))
         for d in display_strings:
             assert d in [e.text for e in div_elements]
@@ -152,10 +157,10 @@ def test_layout_and_styling(browser, url_to_test):
 def test_home_page_blank_list_item_entered_gives_error(browser, url_to_test):
     browser.get(url_to_test)
     input_box = get_item_input_box(browser)
-    with wait_for_page_load(browser):
-        input_box.send_keys(Keys.ENTER)
-    help_block = browser.find_element_by_class_name('help-block')
-    assert 'blank' in help_block.text
+    input_box.send_keys(Keys.ENTER)
+    # browser intercepts the request and doesn't submit the form
+    element = wait_for(lambda: browser.find_elements_by_css_selector('#id_text:invalid'))
+    assert element
 
 
 def test_blank_list_item_entered_for_existing_list_gives_error(browser, url_to_test):
@@ -168,10 +173,7 @@ def test_blank_list_item_entered_for_existing_list_gives_error(browser, url_to_t
     input_box = get_item_input_box(browser)
     row_1 = browser.find_element_by_id('id_item_row_1')
     assert item_1_text in row_1.text
-    with wait_for_page_load(browser):
-        input_box.send_keys(Keys.ENTER)
-    help_block = browser.find_element_by_class_name('help-block')
-    assert 'blank' in help_block.text
-    # TODO this is probably wrong because the view for an existing list shouldn't
-    #   redirect to the home page, and the help message hasn't been implemented
-    #   for the list view yet
+    input_box.send_keys(Keys.ENTER)
+    # browser intercepts the request and doesn't submit the form
+    element = wait_for(lambda: browser.find_elements_by_css_selector('#id_text:invalid'))
+    assert element

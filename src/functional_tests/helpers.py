@@ -1,7 +1,24 @@
+import time
 from contextlib import contextmanager
 
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.support.expected_conditions import staleness_of
 from selenium.webdriver.support.wait import WebDriverWait
+
+MAX_WAIT = 3
+
+
+def wait(fn):
+    def modified_fn(*args, **kwargs):
+        start_time = time.time()
+        while True:
+            try:
+                return fn(*args, **kwargs)
+            except (AssertionError, WebDriverException) as e:
+                if time.time() - start_time > MAX_WAIT:
+                    raise e
+                time.sleep(0.5)
+    return modified_fn
 
 
 @contextmanager
