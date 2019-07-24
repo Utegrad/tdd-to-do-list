@@ -189,3 +189,12 @@ def test_cannot_add_duplicate_items(browser, url_to_test):
     # have a div with NUM: item_text
     list_items = wait_for(lambda: browser.find_elements_by_class_name("lists-item"))
     assert any([item for item in list_items if item_text in item.text])
+    # enter a duplicate item
+    input_box = get_item_input_box(browser)
+    input_box.send_keys(item_text)
+    # expect invalid entry for duplicate item in list
+    input_box.send_keys(Keys.ENTER)
+    error_items = wait_for(lambda: browser.find_elements_by_css_selector('#id_text:invalid'))
+    # message contained in the error
+    error_msg = 'duplicate'
+    assert any([item for item in error_items if error_msg in item.text])
