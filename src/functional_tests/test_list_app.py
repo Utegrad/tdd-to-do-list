@@ -177,3 +177,15 @@ def test_blank_list_item_entered_for_existing_list_gives_error(browser, url_to_t
     # browser intercepts the request and doesn't submit the form
     element = wait_for(lambda: browser.find_elements_by_css_selector('#id_text:invalid'))
     assert element
+
+
+def test_cannot_add_duplicate_items(browser, url_to_test):
+    item_text = 'item text'
+    browser.get(url_to_test)
+    input_box = get_item_input_box(browser)
+    input_box.send_keys(item_text)
+    with wait_for_page_load(browser):
+        input_box.send_keys(Keys.ENTER)
+    # have a div with NUM: item_text
+    list_items = wait_for(lambda: browser.find_elements_by_class_name("lists-item"))
+    assert any([item for item in list_items if item_text in item.text])
