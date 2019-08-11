@@ -24,7 +24,7 @@ def wait_for(fn):
 
 
 @slow
-def at_least(fn):
+def wait_for_min(fn):
     return fn()
 
 
@@ -200,8 +200,7 @@ def test_cannot_add_duplicate_items(browser, url_to_test):
     input_box.send_keys(item_text)
     # expect invalid entry for duplicate item in list
     input_box.send_keys(Keys.ENTER)
-    error_items = at_least(lambda: browser.find_elements_by_css_selector('.has-error'))
+    error_items = wait_for_min(lambda: browser.find_elements_by_css_selector('.has-error'))
     # message contained in the error
     error_msg = 'duplicate'
-    assert error_msg in [item.text for item in error_items]
-    #assert any([item for item in error_items if error_msg in item.text])
+    assert any([item.text for item in error_items if error_msg in item.text])
