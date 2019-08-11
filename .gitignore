@@ -3,6 +3,7 @@ src/django_tdd_tutorial/.env
 build_reports/*
 .idea/django_tdd_tutorial.iml
 .idea/misc.xml
+*.db
 
 
 # Created by .ignore support plugin (hsz.mobi)
