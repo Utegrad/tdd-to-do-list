@@ -106,7 +106,7 @@ class ListViewTest(TestCase):
             reverse('lists:view_list', args=[list1.id, ]),
             data={'text': first_item_text}
         )
-        expected_error = DUPLICATE_ITEM_ERROR
+        expected_error = escape(DUPLICATE_ITEM_ERROR)
         self.assertContains(response, expected_error)
         self.assertTemplateUsed(response, 'lists/list.html')
         self.assertEqual(Item.objects.all().count(), 1)
