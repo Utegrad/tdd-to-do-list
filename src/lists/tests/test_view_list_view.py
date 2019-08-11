@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.html import escape
 
-from lists.forms import ItemForm, EMPTY_ITEM_ERROR
+from lists.forms import ItemForm, ExistingListItemForm, EMPTY_ITEM_ERROR, DUPLICATE_ITEM_ERROR
 from lists.models import Item, List
 
 
@@ -78,7 +78,7 @@ class ListViewTest(TestCase):
     def test_displays_item_form(self):
         list_ = List.objects.create()
         response = self.client.get(reverse('lists:view_list', args=[list_.id, ]))
-        self.assertIsInstance(response.context['form'], ItemForm)
+        self.assertIsInstance(response.context['form'], ExistingListItemForm)
         self.assertContains(response, 'name="text"')
 
     def test_for_invalid_input_nothing_saved_to_db(self):
@@ -92,13 +92,12 @@ class ListViewTest(TestCase):
 
     def test_for_invalid_input_passes_form_to_template(self):
         response = self.post_invalid_input()
-        self.assertIsInstance(response.context['form'], ItemForm)
+        self.assertIsInstance(response.context['form'], ExistingListItemForm)
 
     def test_for_invalid_input_shows_error_on_page(self):
         response = self.post_invalid_input()
         self.assertContains(response, escape(EMPTY_ITEM_ERROR))
 
-    @skip
     def test_duplicate_item_validation_errors_show_on_lists_page(self):
         first_item_text = 'first item'
         list1 = List.objects.create()
@@ -107,7 +106,7 @@ class ListViewTest(TestCase):
             reverse('lists:view_list', args=[list1.id, ]),
             data={'text': first_item_text}
         )
-        expected_error = 'duplicate'
+        expected_error = DUPLICATE_ITEM_ERROR
         self.assertContains(response, expected_error)
         self.assertTemplateUsed(response, 'lists/list.html')
         self.assertEqual(Item.objects.all().count(), 1)
