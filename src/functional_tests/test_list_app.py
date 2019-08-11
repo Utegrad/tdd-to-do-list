@@ -1,5 +1,6 @@
 import os
 import re
+import time
 
 import pytest
 from selenium import webdriver
@@ -10,7 +11,7 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
-from functional_tests.helpers import wait_for_page_load, wait
+from functional_tests.helpers import wait_for_page_load, wait, slow
 
 IMPLICIT_WAIT = 5
 MAX_WAIT = 8
@@ -19,6 +20,11 @@ HOME_PAGE_TITLE = 'To-Do - Home'
 
 @wait
 def wait_for(fn):
+    return fn()
+
+
+@slow
+def at_least(fn):
     return fn()
 
 
@@ -194,7 +200,16 @@ def test_cannot_add_duplicate_items(browser, url_to_test):
     input_box.send_keys(item_text)
     # expect invalid entry for duplicate item in list
     input_box.send_keys(Keys.ENTER)
-    error_items = wait_for(lambda: browser.find_elements_by_css_selector('#id_text:invalid'))
+    start_time = time.time()
+    while True:
+        error_items = wait_for(lambda: browser.find_elements_by_css_selector('.has-error'))
+        elasped_time = time.time() - start_time
+        if len(error_items) == 0 and (elasped_time < IMPLICIT_WAIT):
+            continue
+        else:
+            break
+
     # message contained in the error
     error_msg = 'duplicate'
-    assert any([item for item in error_items if error_msg in item.text])
+    assert error_msg in [item.text for item in error_items]
+    #assert any([item for item in error_items if error_msg in item.text])

@@ -21,6 +21,24 @@ def wait(fn):
     return modified_fn
 
 
+def slow(fn):
+    def modified_fn(*args, **kwargs):
+        start_time = time.time()
+        while True:
+            try:
+                result = fn(*args, **kwargs)
+                elapsed_time = time.time() - start_time
+                if len(result) == 0 and elapsed_time < MAX_WAIT:
+                    continue
+                else:
+                    return result
+            except (AssertionError, WebDriverException, TypeError) as e:
+                if time.time() - start_time > MAX_WAIT:
+                    raise e
+                time.sleep(0.5)
+    return modified_fn
+
+
 @contextmanager
 def wait_for_page_load(browser, timeout=3):
     """ Wait for a page load.

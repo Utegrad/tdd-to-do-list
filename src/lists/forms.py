@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from lists.models import Item
 
 EMPTY_ITEM_ERROR = "List items can't be blank"
-DUPLICATE_ITEM_ERROR = "Lists can have duplicate items"
+DUPLICATE_ITEM_ERROR = "Lists can't have duplicate items"
 
 
 class ItemForm(forms.models.ModelForm):
