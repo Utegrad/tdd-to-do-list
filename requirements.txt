@@ -1,7 +1,7 @@
-Django==2.2.3
+Django==2.2.8
 selenium==3.141.0
 django_environ==0.4.5
-Django==2.2.3
+Django==2.2.8
 environ==1.0
 fabric==2.4.0
 botocore==1.12.165

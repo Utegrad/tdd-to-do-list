@@ -1,5 +1,5 @@
 django_environ==0.4.5
-Django==2.2.3
+Django==2.2.8
 environ==1.0
 django-crispy-forms==1.7.2
 mysqlclient
